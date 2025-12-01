@@ -1,3 +1,45 @@
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Pastikan SEMUA elemen pakai Poppins */
+@layer base {
+  html, body, #root, * {
+    @apply font-sans !important;
+  }
+}
+
+/* Fallback lokal (opsional, tapi aman) */
+@layer base {
+  @font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Poppins'), local('Poppins-Regular');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Poppins Medium'), local('Poppins-Medium');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Poppins SemiBold'), local('Poppins-SemiBold');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Poppins Bold'), local('Poppins-Bold');
+    font-display: swap;
+  }
+}
