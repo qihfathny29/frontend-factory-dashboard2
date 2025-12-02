@@ -1,19 +1,128 @@
 /* index.css */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Pastikan SEMUA elemen pakai Poppins */
-@layer base {
-  html, body, #root, * {
-    @apply font-sans !important;
+@layer components {
+  .all-\[unset\] {
+    all: unset;
   }
 }
 
-/* Fallback lokal (opsional, tapi aman) */
+:root {
+  --colors-accents-red: rgba(255, 56, 60, 1);
+  --animate-spin: spin 1s linear infinite;
+}
+
+/* Theme color modes */
+[data-colors-mode="light"] {
+  --colors-accents-red: rgba(255, 56, 60, 1);
+}
+[data-colors-mode="dark"] {
+  --colors-accents-red: rgba(255, 66, 69, 1);
+}
+[data-colors-mode="IC-light"] {
+  --colors-accents-red: rgba(233, 21, 45, 1);
+}
+[data-colors-mode="IC-dark"] {
+  --colors-accents-red: rgba(255, 97, 101, 1);
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fade-in 1s var(--animation-delay, 0s) ease forwards;
+}
+.animate-fade-up {
+  animation: fade-up 1s var(--animation-delay, 0s) ease forwards;
+}
+.animate-marquee {
+  animation: marquee var(--duration) infinite linear;
+}
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
+}
+.animate-shimmer {
+  animation: shimmer 8s infinite;
+}
+.animate-spin {
+  animation: var(--animate-spin);
+}
+
+/* Keyframes */
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes image-glow {
+  0% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+  }
+  10% {
+    opacity: 0.7;
+    animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+  }
+  to {
+    opacity: 0.4;
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shimmer {
+  0%,
+  90%,
+  to {
+    background-position: calc(-100% - var(--shimmer-width)) 0;
+  }
+  30%,
+  60% {
+    background-position: calc(100% + var(--shimmer-width)) 0;
+  }
+}
+@keyframes marquee {
+  0% {
+    transform: translate(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+@keyframes marquee-vertical {
+  0% {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+/* PAKSA SEMUA ELEMENTS MENGGUNAKAN POPPINS */
 @layer base {
+  html {
+    font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  }
+
   @font-face {
     font-family: 'Poppins';
     font-style: normal;

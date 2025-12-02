@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import header from "./../assets/Header.png";
 import backgroundImage from "./../assets/Background.png";
