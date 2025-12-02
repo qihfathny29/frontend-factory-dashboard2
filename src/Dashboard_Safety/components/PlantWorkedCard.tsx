@@ -4,7 +4,7 @@ const PlantWorkedCard: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-full h-full flex flex-col items-center justify-center text-center">
       {/* Header Text - Bold sedang */}
-      <div className="text-gray-700 text-lg font-bold mb-2">
+      <div className="text-black text-lg font-bold mb-2">
         This Plant has Worked
       </div>
 
@@ -14,10 +14,10 @@ const PlantWorkedCard: React.FC = () => {
       </div>
 
       {/* Subtitle - Normal/biasa aja */}
-      <div className="text-gray-700 text-lg font-bold mb-6">Days</div>
+      <div className="text-black text-lg font-bold mb-6">Days</div>
 
       {/* Description - Bold sedang */}
-      <div className="text-gray-700 text-lg font-bold mb-4">
+      <div className="text-black text-lg font-bold mb-4">
         Without an Accident
       </div>
 

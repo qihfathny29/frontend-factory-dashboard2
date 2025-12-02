@@ -9,7 +9,7 @@ const SeriousAccident: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col justify-between">
       {/* Title */}
-      <h2 className="text-base font-semibold text-center mb-3">
+      <h2 className="text-base font-bold text-center mb-3">
         Serious Accident
       </h2>
 

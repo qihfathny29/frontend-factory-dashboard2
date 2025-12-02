@@ -5,6 +5,13 @@ import SafetyPatrol from "./components/SafetyPatrol";
 import AccidentTypeCard from "./components/AccidentTypePieChart";
 import Calender from "./components/Calender";
 import SeriousAccident from "./components/SeriousAccident";
+import SeriousAccidentSubcont from "./components/SeriousAccidentSubcont";
+import Grade1Accident from "./components/Grade1Accident";
+import FireAccident from "./components/FireAccident";
+import TrafficAccident from "./components/TrafficAccident";
+import AccidentList from "./components/AccidentList";
+import SafetyPatrolList from "./components/SafetyPatrolList";
+import SafetyPatrolChart from "./components/SafetyPatrolChart";
 
 const Dashboard: React.FC = () => {
   // Example problem dates - bisa diganti dengan data dari API
@@ -50,26 +57,41 @@ const Dashboard: React.FC = () => {
               <SeriousAccident />
             </div>
 
-            {/* Sisanya 4 card kosong dulu (placeholder) - masing-masing 1 kolom */}
+            {/* Serious Accident Subcont - 1 kolom */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-3 h-full">
-                <p className="text-center text-gray-400">Card 3</p>
-              </div>
+              <SeriousAccidentSubcont />
+            </div>
+
+            {/* Sisanya 3 card kosong dulu (placeholder) */}
+            <div className="lg:col-span-1">
+              <Grade1Accident />
+            </div>
+
+            <div className="lg:col-span-1">
+              <FireAccident />
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-3 h-full">
-                <p className="text-center text-gray-400">Card 4</p>
-              </div>
+              <TrafficAccident />
             </div>
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-3 h-full">
-                <p className="text-center text-gray-400">Card 5</p>
-              </div>
+          </div>
+        </div>
+
+        {/* Bottom Section - Row 3: Accident List + Safety Patrol List + Summary Card */}
+        <div className="mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+            {/* Accident List - 3 kolom (persegi panjang) */}
+            <div className="lg:col-span-3">
+              <AccidentList />
             </div>
+
+            {/* Safety Patrol List - 3 kolom (persegi panjang, sama dengan Accident List) */}
+            <div className="lg:col-span-3">
+              <SafetyPatrolList />
+            </div>
+
+            {/* Summary Card - 1 kolom (persegi) */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-3 h-full">
-                <p className="text-center text-gray-400">Card 6</p>
-              </div>
+              <SafetyPatrolChart />
             </div>
           </div>
         </div>
