@@ -150,7 +150,7 @@ const SafetyAccidentCard: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col max-w-xl w-full">
+    <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col w-full">
       {/* HEADER: Judul + Icon Buttons */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-base font-bold text-gray-800">Safety Accident</h2>

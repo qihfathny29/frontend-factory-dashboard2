@@ -11,7 +11,7 @@ const accidentData = [
   { name: "Serious Accident Subcont", value: 32 },
   { name: "Grade 1 Accident", value: 28 },
   { name: "Fire Accident", value: 15 },
-  { name: "Traffic Accident", value: 55 },  
+  { name: "Traffic Accident", value: 55 },
 ];
 
 // WARNA untuk pie chart
@@ -20,10 +20,10 @@ const COLORS = ["#5459AC", "#E83C91", "#73AF6F", "#9B5DE0", "#08CB00"];
 const AccidentTypeCard: React.FC = () => {
   // Data untuk chart
   const chartData = {
-    labels: accidentData.map(item => item.name),
+    labels: accidentData.map((item) => item.name),
     datasets: [
       {
-        data: accidentData.map(item => item.value),
+        data: accidentData.map((item) => item.value),
         backgroundColor: COLORS,
         borderColor: "#fff",
         borderWidth: 2,
@@ -43,13 +43,14 @@ const AccidentTypeCard: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-full">
+    <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col">
       {/* HEADER - Judul card */}
-      <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">Accident Type</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+        Accident Type
+      </h2>
 
       {/* CONTAINER UTAMA - Flex row untuk layout kiri-kanan */}
       <div className="flex gap-8 justify-center items-center">
-        
         {/* BAGIAN KIRI - PIE CHART */}
         <div className="flex-1 min-w-0 flex justify-center">
           <div style={{ height: "250px" }}>
@@ -67,13 +68,11 @@ const AccidentTypeCard: React.FC = () => {
                 className="w-4 h-4 rounded-sm"
                 style={{ backgroundColor: COLORS[index] }}
               ></div>
-              
+
               {/* TEXT INFORMASI */}
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-700">{item.name}</p>
               </div>
-              
-            
             </div>
           ))}
         </div>

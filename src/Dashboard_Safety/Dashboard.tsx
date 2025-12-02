@@ -7,8 +7,6 @@ import AccidentTypeCard from "./components/AccidentTypePieChart";
 const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#EEE9E5]">
-      {/* Header/Info Bar - skip dulu */}
-
       {/* Main Content Area */}
       <div className="p-6">
         {/* Top Section - Row 1: Side by Side */}
