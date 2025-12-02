@@ -2,13 +2,19 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import header from "./../assets/Header.png";
 import backgroundImage from "./../assets/Background.png";
+import { DropdownCompanies } from "./Dropdowns/DropdownCompanies";
+import { DropdownPlant } from "./Dropdowns/DropdownPlant";
+import { DropdownType } from "./Dropdowns/DropdownType";
+import { DropdownPeriod } from "./Dropdowns/DropdownPeriod";
 
 export const Navbar = () => {
   const [activeTab, setActiveTab] = useState("Safety");
-  const [selectedCompany, setSelectedCompany] = useState("");
-  const [selectedPlant, setSelectedPlant] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>(["all"]);
+  const [selectedPlants, setSelectedPlants] = useState<string[]>(["all"]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(["all"]);
+  const [selectedPeriods, setSelectedPeriods] = useState<string[]>(["all"]);
 
   const navigationTabs = [
     { id: "safety", label: "Safety" },
@@ -18,12 +24,13 @@ export const Navbar = () => {
     { id: "management", label: "Management" },
   ];
 
-  const dropdownFilters = [
-    { id: "company", label: "COMPANY", value: selectedCompany, setter: setSelectedCompany },
-    { id: "plant", label: "PLANT", value: selectedPlant, setter: setSelectedPlant },
-    { id: "type", label: "TYPE", value: selectedType, setter: setSelectedType },
-    { id: "period", label: "PERIOD", value: selectedPeriod, setter: setSelectedPeriod },
-  ];
+  const toggleDropdown = (id: string) => {
+    setOpenDropdown(openDropdown === id ? null : id);
+  };
+
+  const closeDropdown = () => {
+    setOpenDropdown(null);
+  };
 
   return (
     <nav
@@ -62,31 +69,85 @@ export const Navbar = () => {
 
         {/* Dropdown Filters */}
         <div className="flex items-center justify-center gap-2">
-          {dropdownFilters.map((filter) => (
+          {/* Company Dropdown */}
+          <div className="relative">
             <div
-              key={filter.id}
-              className="min-w-[120px] h-[40px] px-3 bg-white rounded-xl flex items-center justify-between gap-2"
+              className="min-w-[120px] h-[40px] px-3 bg-white rounded-xl flex items-center justify-between gap-2 cursor-pointer"
+              onClick={() => toggleDropdown("company")}
             >
-              <label
-                htmlFor={`${filter.id}-select`}
-                className="flex items-center flex-1 min-w-0"
-              >
-                <span className="font-semibold text-[#374557] text-sm">
-                  {filter.label}
-                </span>
-              </label>
-              <button
-                id={`${filter.id}-select`}
-                type="button"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-label={`Select ${filter.label.toLowerCase()}`}
-                className="flex-shrink-0"
-              >
-                <ChevronDown className="w-4 h-4 text-[#374557]" />
-              </button>
+              <span className="font-semibold text-[#374557] text-sm">COMPANY</span>
+              <ChevronDown className="w-4 h-4 text-[#374557]" />
             </div>
-          ))}
+            {openDropdown === "company" && (
+              <div className="absolute top-full mt-2 left-0 z-50">
+                <DropdownCompanies
+                  selectedCompanies={selectedCompanies}
+                  onSelectionChange={setSelectedCompanies}
+                  onApply={closeDropdown}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Plant Dropdown */}
+          <div className="relative">
+            <div
+              className="min-w-[120px] h-[40px] px-3 bg-white rounded-xl flex items-center justify-between gap-2 cursor-pointer"
+              onClick={() => toggleDropdown("plant")}
+            >
+              <span className="font-semibold text-[#374557] text-sm">PLANT</span>
+              <ChevronDown className="w-4 h-4 text-[#374557]" />
+            </div>
+            {openDropdown === "plant" && (
+              <div className="absolute top-full mt-2 left-0 z-50">
+                <DropdownPlant
+                  selectedPlants={selectedPlants}
+                  onSelectionChange={setSelectedPlants}
+                  onApply={closeDropdown}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Type Dropdown */}
+          <div className="relative">
+            <div
+              className="min-w-[120px] h-[40px] px-3 bg-white rounded-xl flex items-center justify-between gap-2 cursor-pointer"
+              onClick={() => toggleDropdown("type")}
+            >
+              <span className="font-semibold text-[#374557] text-sm">TYPE</span>
+              <ChevronDown className="w-4 h-4 text-[#374557]" />
+            </div>
+            {openDropdown === "type" && (
+              <div className="absolute top-full mt-2 left-0 z-50">
+                <DropdownType
+                  selectedTypes={selectedTypes}
+                  onSelectionChange={setSelectedTypes}
+                  onApply={closeDropdown}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Period Dropdown */}
+          <div className="relative">
+            <div
+              className="min-w-[120px] h-[40px] px-3 bg-white rounded-xl flex items-center justify-between gap-2 cursor-pointer"
+              onClick={() => toggleDropdown("period")}
+            >
+              <span className="font-semibold text-[#374557] text-sm">PERIOD</span>
+              <ChevronDown className="w-4 h-4 text-[#374557]" />
+            </div>
+            {openDropdown === "period" && (
+              <div className="absolute top-full mt-2 left-0 z-50">
+                <DropdownPeriod
+                  selectedPeriods={selectedPeriods}
+                  onSelectionChange={setSelectedPeriods}
+                  onApply={closeDropdown}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

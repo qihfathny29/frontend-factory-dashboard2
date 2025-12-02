@@ -1,0 +1,68 @@
+import { Check } from "lucide-react";
+
+interface DropdownPlantProps {
+  selectedPlants: string[];
+  onSelectionChange: (plants: string[]) => void;
+  onApply: () => void;
+}
+
+const plants = [
+  { id: "all", label: "All" },
+  { id: "fajar", label: "Fajar Plant" },
+  { id: "bekasi", label: "Bekasi Plant" },
+];
+
+export const DropdownPlant = ({
+  selectedPlants,
+  onSelectionChange,
+  onApply,
+}: DropdownPlantProps) => {
+  const handleToggle = (id: string) => {
+    if (id === "all") {
+      onSelectionChange(selectedPlants.length === plants.length ? [] : plants.map((p) => p.id));
+    } else {
+      const newSelection = selectedPlants.includes(id)
+        ? selectedPlants.filter((item) => item !== id && item !== "all")
+        : [...selectedPlants.filter((item) => item !== "all"), id];
+      onSelectionChange(newSelection);
+    }
+  };
+
+  const isChecked = (id: string) => {
+    if (id === "all") return selectedPlants.length === plants.length;
+    return selectedPlants.includes(id);
+  };
+
+  return (
+    <div className="flex flex-col items-start gap-2 px-4 py-3 bg-greysblue-grey100 rounded-lg shadow-lg min-w-[160px]">
+      {plants.map((plant) => (
+        <button
+          key={plant.id}
+          onClick={() => handleToggle(plant.id)}
+          className="flex items-center gap-2 w-full hover:bg-gray-50 p-1.5 rounded transition-colors"
+        >
+          <div className="relative w-4 h-4 rounded border border-solid border-[#1864ab] flex-shrink-0">
+            {isChecked(plant.id) && (
+              <div className="absolute inset-0 bg-[#1864ab] rounded flex items-center justify-center">
+                <Check className="w-3 h-3 text-white" strokeWidth={3} />
+              </div>
+            )}
+          </div>
+          <span
+            className={`text-sm whitespace-nowrap ${
+              plant.id === "all" ? "font-semibold text-black" : "font-normal text-greysblue-grey700"
+            }`}
+          >
+            {plant.label}
+          </span>
+        </button>
+      ))}
+      <button
+        onClick={onApply}
+        className="flex items-center justify-center w-full mt-1 px-4 py-2 bg-[#1864ab] rounded-lg hover:bg-[#1864ab]/90 transition-colors"
+      >
+        <span className="font-semibold text-white text-sm">Apply</span>
+      </button>
+    </div>
+  );
+};

@@ -13,6 +13,8 @@
 
 :root {
   --colors-accents-red: rgba(255, 56, 60, 1);
+  --greysblue-grey100: rgba(255, 255, 255, 1);
+  --greysblue-grey700: rgba(115, 119, 145, 1);
   --animate-spin: spin 1s linear infinite;
 }
 
