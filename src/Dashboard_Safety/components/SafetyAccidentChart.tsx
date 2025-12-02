@@ -1,5 +1,5 @@
 import React from "react";
-import { Line } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -140,7 +140,7 @@ const SafetyAccidentCard: React.FC = () => {
         max: 120,
         title: {
           display: true,
-          text: "Case Target",
+          text: "Case accum",
         },
         grid: {
           drawOnChartArea: false, // Gak overlap sama grid kiri
@@ -150,50 +150,58 @@ const SafetyAccidentCard: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
+    <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col max-w-xl w-full">
       {/* HEADER: Judul + Icon Buttons */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-800">Safety Accident</h2>
-        <div className="flex items-center gap-2">
-          <button className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition">
-            <X size={18} className="text-white" />
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base font-bold text-gray-800">Safety Accident</h2>
+        <div className="flex items-center gap-1">
+          <button className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition border-2 border-black">
+            <X size={14} className="text-white" />
           </button>
-          <button className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
-            <ChevronUp size={18} className="text-gray-700" />
+          <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
+            <ChevronUp size={14} className="text-blue-700" />
           </button>
-          <button className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
-            <ChevronDown size={18} className="text-gray-700" />
+          <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
+            <ChevronDown size={14} className="text-blue-700" />
           </button>
         </div>
       </div>
 
       {/* LEGEND (Manual) */}
-      <div className="flex flex-wrap items-center gap-4 mb-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-blue-500 rounded"></div>
+      <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-blue-500 rounded"></div>
           <span className="font-medium">TH</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-green-500 rounded"></div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-green-500 rounded"></div>
           <span className="font-medium">PT</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-purple-500 rounded"></div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-purple-500 rounded"></div>
           <span className="font-medium">Elect.</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-red-500"></div>
+        <div className="flex items-center gap-1">
+          <div className="flex items-center">
+            <div className="w-2 h-0.5 bg-red-500"></div>
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+            <div className="w-2 h-0.5 bg-red-500"></div>
+          </div>
           <span className="font-medium">Target</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-blue-500"></div>
+        <div className="flex items-center gap-1">
+          <div className="flex items-center">
+            <div className="w-2 h-0.5 bg-blue-500"></div>
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+            <div className="w-2 h-0.5 bg-blue-500"></div>
+          </div>
           <span className="font-medium">Actual</span>
         </div>
       </div>
 
       {/* CHART */}
       <div className="flex-1 min-h-0">
-        <Line data={chartData} options={chartOptions} />
+        <Chart type="line" data={chartData} options={chartOptions} />
       </div>
     </div>
   );
