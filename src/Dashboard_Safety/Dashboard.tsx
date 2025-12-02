@@ -1,6 +1,8 @@
 import React from "react";
 import PlantWorkedCard from "./components/PlantWorkedCard";
 import SafetyAccidentChart from "./components/SafetyAccidentChart";
+import SafetyPatrol from "./components/SafetyPatrol";
+import AccidentTypeCard from "./components/AccidentTypePieChart";
 
 const Dashboard: React.FC = () => {
   return (
@@ -16,9 +18,14 @@ const Dashboard: React.FC = () => {
             <PlantWorkedCard />
           </div>
 
-          {/* SafetyAccidentChart - 4 kolom tapi dibatasi max-width */}
-          <div className="lg:col-span-4 max-w-4xl">
+          {/* SafetyAccidentChart - 2 kolom */}
+          <div className="lg:col-span-2">
             <SafetyAccidentChart />
+          </div>
+
+          {/* AccidentTypeCard - 2 kolom */}
+          <div className="lg:col-span-2">
+            <AccidentTypeCard />
           </div>
         </div>
 
@@ -29,7 +36,7 @@ const Dashboard: React.FC = () => {
 
         {/* Bottom Section - Row 3 */}
         <div className="mb-6">
-          {/* Nanti tambah tables dan safety patrol */}
+          <SafetyPatrol />
         </div>
       </div>
     </div>
