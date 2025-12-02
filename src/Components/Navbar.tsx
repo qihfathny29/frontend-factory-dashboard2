@@ -22,8 +22,12 @@ const DropdownButton = ({ label, onClick }: DropdownButtonProps) => (
   </div>
 );
 
-export const Navbar = () => {
-  const [activeTab, setActiveTab] = useState("Safety");
+interface NavbarProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+export const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>(["all"]);
@@ -72,7 +76,7 @@ export const Navbar = () => {
               role="tab"
               aria-selected={activeTab === tab.label}
               aria-controls={`${tab.id}-panel`}
-              onClick={() => setActiveTab(tab.label)}
+              onClick={() => onTabChange(tab.label)}
               className={`inline-flex items-center justify-center px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl transition-colors font-semibold text-white text-xs sm:text-sm lg:text-base whitespace-nowrap ${
                 activeTab === tab.label ? "bg-[#81a1c1]" : "hover:bg-[#81a1c1]/50"
               }`}
