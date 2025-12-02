@@ -14,7 +14,7 @@ export const Navbar = () => {
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>(["all"]);
   const [selectedPlants, setSelectedPlants] = useState<string[]>(["all"]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(["all"]);
-  const [selectedPeriods, setSelectedPeriods] = useState<string[]>(["all"]);
+  const [selectedPeriods, setSelectedPeriods] = useState<string[]>(["fy25-yearly"]);
 
   const navigationTabs = [
     { id: "safety", label: "Safety" },
@@ -139,7 +139,7 @@ export const Navbar = () => {
               <ChevronDown className="w-4 h-4 text-[#374557]" />
             </div>
             {openDropdown === "period" && (
-              <div className="absolute top-full mt-2 left-0 z-50">
+              <div className="absolute top-full mt-2 right-0 z-50">
                 <DropdownPeriod
                   selectedPeriods={selectedPeriods}
                   onSelectionChange={setSelectedPeriods}
