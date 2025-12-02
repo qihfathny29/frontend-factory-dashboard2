@@ -34,7 +34,7 @@ const AccidentTypeCard: React.FC = () => {
   // Options untuk chart
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     plugins: {
       legend: {
         display: false, // Matikan legend bawaan chart
@@ -45,34 +45,32 @@ const AccidentTypeCard: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col">
       {/* HEADER - Judul card */}
-      <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+      <h2 className="text-base font-bold text-gray-800 mb-3 text-center">
         Accident Type
       </h2>
 
       {/* CONTAINER UTAMA - Flex row untuk layout kiri-kanan */}
-      <div className="flex gap-8 justify-center items-center">
+      <div className="flex gap-4 items-center justify-center flex-1">
         {/* BAGIAN KIRI - PIE CHART */}
-        <div className="flex-1 min-w-0 flex justify-center">
-          <div style={{ height: "250px" }}>
-            <Pie data={chartData} options={chartOptions} />
-          </div>
+        <div className="w-48 h-48 flex justify-center flex-shrink-0">
+          <Pie data={chartData} options={chartOptions} />
         </div>
 
         {/* BAGIAN KANAN - INFORMASI DETAIL */}
-        <div className="flex-1 flex flex-col justify-center gap-4">
+        <div className="flex flex-col justify-center gap-2 text-sm">
           {/* MAP = looping data accident untuk membuat setiap row info */}
           {accidentData.map((item, index) => (
-            <div key={index} className="flex items-center gap-3">
+            <div key={index} className="flex items-center gap-2">
               {/* KOTAK WARNA - warna persegi kecil sesuai pie chart */}
               <div
-                className="w-4 h-4 rounded-sm"
+                className="w-3 h-3 rounded-sm flex-shrink-0"
                 style={{ backgroundColor: COLORS[index] }}
               ></div>
 
               {/* TEXT INFORMASI */}
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-700">{item.name}</p>
-              </div>
+              <p className="font-medium text-gray-700 whitespace-nowrap">
+                {item.name}
+              </p>
             </div>
           ))}
         </div>
