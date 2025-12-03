@@ -13,7 +13,6 @@ import {
 } from "chart.js";
 import { X, ChevronUp, ChevronDown } from "lucide-react";
 
-// REGISTER Chart.js components (wajib!)
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -26,86 +25,81 @@ ChartJS.register(
 );
 
 const SafetyAccidentCard: React.FC = () => {
-  // DATA DUMMY - Bulan dari Apr sampai Mar
   const months = [
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-    "Jan",
-    "Feb",
-    "Mar",
+    "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+    "Oct", "Nov", "Dec", "Jan", "Feb", "Mar",
   ];
 
-  // DATA untuk chart
+  // DATA ASLI dari setiap kategori
+  const thData = [1, 2, 1, 0, 1, 2, 1, 0, 1, 1, 0, 2];
+  const ptData = [1, 0, 1, 2, 1, 0, 1, 1, 0, 1, 2, 1];
+  const electData = [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0];
+
+  // HITUNG ACTUAL otomatis (jumlah PT + TH + ELECT per bulan)
+  const actualData = months.map((_, index) => {
+    return ptData[index] + thData[index] + electData[index];
+  });
+
+  // Target masih dummy dulu
+  const targetData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
   const chartData = {
     labels: months,
     datasets: [
-      // BAR 1: TH (Biru) - Stacked
       {
         type: "bar" as const,
         label: "TH",
-        data: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Cuma April ada 1
-        backgroundColor: "rgba(59, 130, 246, 0.8)", // Biru
-        stack: "stack1", // Ditumpuk
-        yAxisID: "y", // Pakai sumbu Y kiri
+        data: thData,
+        backgroundColor: "rgba(59, 130, 246, 0.8)",
+        stack: "stack1",
+        yAxisID: "y",
       },
-      // BAR 2: PT (Hijau) - Stacked
       {
         type: "bar" as const,
         label: "PT",
-        data: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // April ada 1 (numpuk di atas TH)
-        backgroundColor: "rgba(34, 197, 94, 0.8)", // Hijau
+        data: ptData,
+        backgroundColor: "rgba(34, 197, 94, 0.8)",
         stack: "stack1",
         yAxisID: "y",
       },
-      // BAR 3: Elect. (Ungu) - Stacked
       {
         type: "bar" as const,
         label: "Elect.",
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Kosong semua
-        backgroundColor: "rgba(168, 85, 247, 0.8)", // Ungu
+        data: electData,
+        backgroundColor: "rgba(168, 85, 247, 0.8)",
         stack: "stack1",
         yAxisID: "y",
       },
-      // LINE 1: Target (Garis Merah)
       {
         type: "line" as const,
         label: "Target",
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Flat 0
-        borderColor: "rgb(239, 68, 68)", // Merah
+        data: targetData,
+        borderColor: "rgb(239, 68, 68)",
         backgroundColor: "rgba(239, 68, 68, 0.1)",
         borderWidth: 2,
-        pointRadius: 0, // Gak ada titik bulat
-        yAxisID: "y1", // Pakai sumbu Y kanan
+        pointRadius: 0,
+        yAxisID: "y1",
       },
-      // LINE 2: Actual (Garis Biru)
       {
         type: "line" as const,
         label: "Actual",
-        data: [1, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0], // 1 → 3 → 3 → 0
-        borderColor: "rgb(59, 130, 246)", // Biru
+        data: actualData, // Sekarang otomatis dihitung!
+        borderColor: "rgb(59, 130, 246)",
         backgroundColor: "rgba(59, 130, 246, 0.1)",
         borderWidth: 2,
-        pointRadius: 4, // Ada titik bulat
+        pointRadius: 4,
         pointBackgroundColor: "rgb(59, 130, 246)",
-        yAxisID: "y1",
+        yAxisID: "y", // Pakai sumbu kiri yang sama dengan bar!
       },
     ],
   };
 
-  // OPTIONS untuk chart
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Legend dibuat manual di atas chart
+        display: false,
       },
       tooltip: {
         mode: "index" as const,
@@ -118,7 +112,6 @@ const SafetyAccidentCard: React.FC = () => {
           display: false,
         },
       },
-      // SUMBU Y KIRI (untuk Bar Chart)
       y: {
         type: "linear" as const,
         position: "left" as const,
@@ -132,7 +125,6 @@ const SafetyAccidentCard: React.FC = () => {
           stepSize: 1,
         },
       },
-      // SUMBU Y KANAN (untuk Line Chart)
       y1: {
         type: "linear" as const,
         position: "right" as const,
@@ -143,7 +135,7 @@ const SafetyAccidentCard: React.FC = () => {
           text: "Case accum",
         },
         grid: {
-          drawOnChartArea: false, // Gak overlap sama grid kiri
+          drawOnChartArea: false,
         },
       },
     },
@@ -151,7 +143,6 @@ const SafetyAccidentCard: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col w-full">
-      {/* HEADER: Judul + Icon Buttons */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-base font-bold text-gray-800">Safety Accident</h2>
         <div className="flex items-center gap-1">
@@ -167,7 +158,6 @@ const SafetyAccidentCard: React.FC = () => {
         </div>
       </div>
 
-      {/* LEGEND (Manual) */}
       <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-blue-500 rounded"></div>
@@ -199,7 +189,6 @@ const SafetyAccidentCard: React.FC = () => {
         </div>
       </div>
 
-      {/* CHART */}
       <div className="flex-1 min-h-0">
         <Chart type="line" data={chartData} options={chartOptions} />
       </div>

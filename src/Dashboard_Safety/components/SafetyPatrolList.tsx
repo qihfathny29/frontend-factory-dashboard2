@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { Search } from "lucide-react";
 
 interface SafetyPatrolData {
   id: number;
@@ -157,6 +158,22 @@ const SafetyPatrolList: React.FC = () => {
     return numbers;
   };
 
+  // Helper function untuk menentukan status class
+  const getStatusClass = (status: string) => {
+    if (status === "Open") {
+      return "bg-blue-100 text-blue-700 border border-blue-300";
+    }
+    return "bg-gray-100 text-gray-700 border border-gray-300";
+  };
+
+  // Helper function untuk menentukan row class
+  const getRowClass = (index: number) => {
+    const baseClass =
+      "border-b border-gray-200 hover:bg-gray-100 transition-colors";
+    const bgClass = index % 2 === 0 ? "bg-white" : "bg-gray-50";
+    return `${baseClass} ${bgClass}`;
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col">
       {/* Header */}
@@ -165,13 +182,16 @@ const SafetyPatrolList: React.FC = () => {
 
         {/* Search Section */}
         <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search Safety Patrol"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search Safety Patrol"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
           <button
             onClick={handleSearch}
             className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm"
@@ -202,12 +222,7 @@ const SafetyPatrolList: React.FC = () => {
             </thead>
             <tbody>
               {currentData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className={`border-b border-gray-200 ${
-                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } hover:bg-gray-100 transition-colors`}
-                >
+                <tr key={item.id} className={getRowClass(index)}>
                   <td className="px-2 py-2">{startIndex + index + 1}</td>
                   <td className="px-2 py-2">{item.occurDate}</td>
                   <td className="px-2 py-2">{item.location}</td>
@@ -216,11 +231,9 @@ const SafetyPatrolList: React.FC = () => {
                   <td className="px-2 py-2">{item.prevention}</td>
                   <td className="px-2 py-2">
                     <span
-                      className={`px-2 py-1 rounded text-[10px] font-semibold ${
-                        item.status === "Open"
-                          ? "bg-blue-100 text-blue-700 border border-blue-300"
-                          : "bg-gray-100 text-gray-700 border border-gray-300"
-                      }`}
+                      className={`px-2 py-1 rounded text-[10px] font-semibold ${getStatusClass(
+                        item.status
+                      )}`}
                     >
                       {item.status}
                     </span>
@@ -241,22 +254,30 @@ const SafetyPatrolList: React.FC = () => {
             Prev
           </button>
 
-          {getPaginationNumbers().map((num, idx) => (
-            <button
-              key={idx}
-              onClick={() => typeof num === "number" && goToPage(num)}
-              disabled={num === "..."}
-              className={`px-3 py-1 text-sm rounded ${
-                num === currentPage
-                  ? "bg-blue-600 text-white font-semibold"
-                  : num === "..."
-                  ? "text-gray-400 cursor-default"
-                  : "text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
+          {getPaginationNumbers().map((num, idx) => {
+            const isCurrentPage = num === currentPage;
+            const isEllipsis = num === "...";
+
+            let buttonClass = "px-3 py-1 text-sm rounded ";
+            if (isCurrentPage) {
+              buttonClass += "bg-blue-600 text-white font-semibold";
+            } else if (isEllipsis) {
+              buttonClass += "text-gray-400 cursor-default";
+            } else {
+              buttonClass += "text-gray-600 hover:bg-gray-200";
+            }
+
+            return (
+              <button
+                key={`page-${idx}-${num}`}
+                onClick={() => typeof num === "number" && goToPage(num)}
+                disabled={isEllipsis}
+                className={buttonClass}
+              >
+                {num}
+              </button>
+            );
+          })}
 
           <button
             onClick={() => goToPage(currentPage + 1)}

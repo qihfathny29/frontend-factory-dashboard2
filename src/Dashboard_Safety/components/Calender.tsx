@@ -189,13 +189,13 @@ const Calender: React.FC<CalendarProps> = ({ problemDates = [] }) => {
 
       {/* Month Picker Popup */}
       {showMonthPicker && (
-        <div className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-2 left-1/2 transform -translate-x-1/2 w-64">
-          <div className="grid grid-cols-3 gap-2">
+        <div className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-2 left-1/2 transform -translate-x-1/2 w-80">
+          <div className="grid grid-cols-3 gap-3">
             {monthNames.map((month, index) => (
               <button
                 key={month}
                 onClick={() => handleMonthSelect(index)}
-                className={`px-3 py-2 rounded hover:bg-blue-100 transition-colors text-sm ${
+                className={`px-2 py-2 rounded hover:bg-blue-100 transition-colors text-sm ${
                   currentDate.getMonth() === index
                     ? "bg-blue-500 text-white"
                     : "bg-gray-50"

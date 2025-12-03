@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { Search } from "lucide-react";
 
 interface AccidentData {
   id: number;
@@ -176,13 +177,16 @@ const AccidentList: React.FC = () => {
 
         {/* Search Section */}
         <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search Accident"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search Accident"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
           <button
             onClick={handleSearch}
             className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm"

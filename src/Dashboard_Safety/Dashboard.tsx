@@ -39,9 +39,9 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* SafetyPatrol - 1 kolom */}
-          <div className="lg:col-span-1 max-h-[350px]">
-            <SafetyPatrol />
-          </div>
+          <div className="lg:col-span-1">
+              <SafetyPatrolChart />
+            </div>
         </div>
 
         {/* Middle Section - Row 2: 6 Cards Sejajar (Calendar + 5 Accident Cards) */}
@@ -91,7 +91,7 @@ const Dashboard: React.FC = () => {
 
             {/* Summary Card - 1 kolom (persegi) */}
             <div className="lg:col-span-1">
-              <SafetyPatrolChart />
+              <SafetyPatrol />
             </div>
           </div>
         </div>
