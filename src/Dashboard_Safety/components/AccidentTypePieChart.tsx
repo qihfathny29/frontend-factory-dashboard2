@@ -7,15 +7,16 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 // DUMMY DATA - ini adalah data palsu untuk testing
 const accidentData = [
-  { name: "Serious Accident", value: 0 },
-  { name: "Serious Accident Subcont", value: 32 },
-  { name: "Grade 1 Accident", value: 28 },
+  { name: "Accident", value: 0 },
+  { name: "Accident Subcont", value: 32 },
+  { name: "Near Miss Accident", value: 8 },
+  { name: "Smoke", value:12 },
   { name: "Fire Accident", value: 15 },
   { name: "Traffic Accident", value: 55 },
 ];
 
 // WARNA untuk pie chart
-const COLORS = ["#5459AC", "#E83C91", "#73AF6F", "#9B5DE0", "#08CB00"];
+const COLORS = ["#5459AC", "#E83C91", "#9B5DE0","#f30000ff", "#08CB00", "#FFA500" ];
 
 const AccidentTypeCard: React.FC = () => {
   // Data untuk chart

@@ -25,7 +25,7 @@ const SafetyPatrolList: React.FC = () => {
   const [selectedSafetyPatrol, setSelectedSafetyPatrol] =
     useState<SafetyPatrolData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
 
   // Dummy data dengan struktur baru
   const allData: SafetyPatrolData[] = [
@@ -127,15 +127,33 @@ const SafetyPatrolList: React.FC = () => {
       image_id:
         "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400",
     },
+    {
+      id: 6,
+      accident_date: "2 August 2025",
+      plant_code: "PT-03",
+      component_code: "DNIA",
+      bu: "Production",
+      accident_name: "Electrical Fire",
+      place: "Factory Building C",
+      accident_category: "Fire Accident",
+      injured_person: "None",
+      damage: "Control panel",
+      circumstance: "Electrical short circuit caused fire in control panel",
+      fact_finding: "Outdated electrical system with no recent inspection",
+      temporary_action: "Evacuate area, fire extinguished by safety team",
+      permanent_action:
+        "Complete electrical system upgrade, quarterly inspection schedule",
+      image_id:
+        "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400",
+    },
   ];
 
   // Filter data
   const filteredData = useMemo(() => {
     return allData.filter(
       (item) =>
-        item.accident_category
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
+        item.damage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.place.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.accident_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery]);

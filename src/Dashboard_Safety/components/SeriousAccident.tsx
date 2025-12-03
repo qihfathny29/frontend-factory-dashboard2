@@ -9,7 +9,7 @@ const SeriousAccident: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col justify-between">
       {/* Title */}
-      <h2 className="text-sm font-bold text-center mb-1">Serious Accident</h2>
+      <h2 className="text-sm font-bold text-center mb-1">Accident</h2>
 
       {/* Main Number */}
       <div className="flex-1 flex items-center justify-center">

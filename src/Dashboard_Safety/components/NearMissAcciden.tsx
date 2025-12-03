@@ -1,15 +1,15 @@
 import React from "react";
 
-const TrafficAccident: React.FC = () => {
+const NearMissAccident: React.FC = () => {
   // Data dummy - nanti bisa diganti dari API
-  const currentCount = 2;
-  const increaseCount = 1;
-  const fiscalYearCount = 3;
+  const currentCount = 0;
+  const stableCount = 0;
+  const fiscalYearCount = 0;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col justify-between">
       {/* Title */}
-      <h2 className="text-sm font-bold text-center mb-1">Traffic Accident</h2>
+      <h2 className="text-sm font-bold text-center mb-1">Near Miss Accident</h2>
 
       {/* Main Number */}
       <div className="flex-1 flex items-center justify-center">
@@ -18,14 +18,17 @@ const TrafficAccident: React.FC = () => {
 
       {/* Bottom Info */}
       <div className="flex items-center justify-center gap-2 pt-1">
-        {/* Increased vs */}
+        {/* Stable vs - Button with 2 arrows */}
         <div className="flex flex-col items-center gap-0.5">
-          <button className="flex item-center gap-1 border border-green-500 text-green-500 px-2 py-0.5 rounded hover:bg-red-50 transition-colors">
-            <span className="text-sm font-bold">▼</span>
-            <span className="text-sm font-bold">{increaseCount}</span>
+          <button className="flex items-center gap-1 border border-green-500 text-green-500 px-2 py-0.5 rounded hover:bg-green-50 transition-colors">
+            <div className="flex flex-col items-center gap-0">
+              <span className="text-xs leading-none">▲</span>
+              <span className="text-xs leading-none">▼</span>
+            </div>
+            <span className="text-sm font-bold">{stableCount}</span>
           </button>
-          <span className="text-[10px] font-semibold text-green-500">
-            Decreased vs.
+          <span className="text-[10px] text-green-500 font-semibold">
+            Stable vs.
           </span>
         </div>
 
@@ -44,4 +47,4 @@ const TrafficAccident: React.FC = () => {
   );
 };
 
-export default TrafficAccident;
+export default NearMissAccident;

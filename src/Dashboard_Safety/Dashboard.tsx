@@ -6,12 +6,13 @@ import AccidentTypeCard from "./components/AccidentTypePieChart";
 import Calender from "./components/Calender";
 import SeriousAccident from "./components/SeriousAccident";
 import SeriousAccidentSubcont from "./components/SeriousAccidentSubcont";
-import Grade1Accident from "./components/Grade1Accident";
+import Smoke from "./components/Smoke";
 import FireAccident from "./components/FireAccident";
 import TrafficAccident from "./components/TrafficAccident";
 import AccidentList from "./components/AccidentList";
 import SafetyPatrolList from "./components/SafetyPatrolList";
 import SafetyPatrolChart from "./components/SafetyPatrolChart";
+import NearMissAccident from "./components/NearMissAcciden";
 
 const Dashboard: React.FC = () => {
   // Example problem dates - bisa diganti dengan data dari API
@@ -38,7 +39,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Middle Section - Row 2 */}
-        <div className="grid grid-cols-6 gap-2 min-h-0">
+        <div className="grid grid-cols-7 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
             <Calender problemDates={problemDates} />
           </div>
@@ -49,7 +50,10 @@ const Dashboard: React.FC = () => {
             <SeriousAccidentSubcont />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <Grade1Accident />
+            <NearMissAccident />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <Smoke />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
             <FireAccident />

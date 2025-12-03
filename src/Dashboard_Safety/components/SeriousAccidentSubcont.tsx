@@ -10,7 +10,7 @@ const SeriousAccidentSubcont: React.FC = () => {
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col justify-between">
       {/* Title */}
       <h2 className="text-sm font-bold text-center mb-1">
-        Serious Accident Subcont
+        Subcount Accident
       </h2>
 
       {/* Main Number */}

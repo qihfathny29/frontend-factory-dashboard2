@@ -26,7 +26,7 @@ const AccidentList: React.FC = () => {
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
 
   // Dummy data dengan struktur baru
   const allData: AccidentData[] = [
@@ -134,9 +134,8 @@ const AccidentList: React.FC = () => {
   const filteredData = useMemo(() => {
     return allData.filter(
       (item) =>
-        item.accident_category
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
+        item.damage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.place.toLowerCase().includes(searchQuery.toLowerCase() ) ||
         item.accident_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery]);
