@@ -34,7 +34,7 @@ const AccidentTypeCard: React.FC = () => {
   // Options untuk chart
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false, // Matikan legend bawaan chart
@@ -45,19 +45,21 @@ const AccidentTypeCard: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col">
       {/* HEADER - Judul card */}
-      <h2 className="text-base font-bold text-gray-800 mb-3 text-center">
+      <h2 className="text-base font-bold text-gray-800 mb-2 text-center">
         Accident Type
       </h2>
 
       {/* CONTAINER UTAMA - Flex row untuk layout kiri-kanan */}
-      <div className="flex gap-4 items-center justify-center flex-1">
+      <div className="flex gap-2 items-center justify-center flex-1 min-h-0 overflow-hidden">
         {/* BAGIAN KIRI - PIE CHART */}
-        <div className="w-48 h-48 flex justify-center flex-shrink-0">
-          <Pie data={chartData} options={chartOptions} />
+        <div className="flex-1 h-full min-w-0 min-h-0 relative flex items-center justify-center">
+          <div className="h-full w-full relative">
+            <Pie data={chartData} options={chartOptions} />
+          </div>
         </div>
 
         {/* BAGIAN KANAN - INFORMASI DETAIL */}
-        <div className="flex flex-col justify-center gap-2 text-sm">
+        <div className="flex flex-col justify-center gap-1 text-xs flex-shrink-0">
           {/* MAP = looping data accident untuk membuat setiap row info */}
           {accidentData.map((item, index) => (
             <div key={index} className="flex items-center gap-2">

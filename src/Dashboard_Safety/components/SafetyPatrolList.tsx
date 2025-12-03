@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Search, Eye, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 interface SafetyPatrolData {
   id: number;
@@ -202,24 +202,24 @@ const SafetyPatrolList: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
+    <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-bold">Accident List</h2>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-base font-bold">Safety Patrol List</h2>
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4" />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Search Accident"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <button
             onClick={() => setCurrentPage(1)}
-            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            className="px-3 py-1.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-xs"
           >
             Search
           </button>
@@ -227,36 +227,35 @@ const SafetyPatrolList: React.FC = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto mb-4">
+      <div className="overflow-x-auto mb-2 flex-1 overflow-y-auto">
         <table className="w-full text-xs border-collapse">
           <thead>
             <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-2 py-1 text-left font-semibold">No</th>
-              <th className="px-2 py-1 text-left font-semibold">
+              <th className="px-2 py-2 text-left font-semibold">No</th>
+              <th className="px-2 py-2 text-left font-semibold">
                 Accident Date
               </th>
-              <th className="px-2 py-1 text-left font-semibold">
+              <th className="px-2 py-2 text-left font-semibold">
                 Component Code
               </th>
-              <th className="px-2 py-1 text-left font-semibold">Plant Code</th>
-              <th className="px-2 py-1 text-left font-semibold">BU</th>
-              <th className="px-2 py-1 text-left font-semibold">
+              <th className="px-2 py-2 text-left font-semibold">Plant Code</th>
+              <th className="px-2 py-2 text-left font-semibold">BU</th>
+              <th className="px-2 py-2 text-left font-semibold">
                 Accident Name
               </th>
-              <th className="px-2 py-1 text-left font-semibold">Place</th>
-              <th className="px-2 py-1 text-left font-semibold">
+              <th className="px-2 py-2 text-left font-semibold">Place</th>
+              <th className="px-2 py-2 text-left font-semibold">
                 Accident Category
               </th>
-              <th className="px-2 py-1 text-left font-semibold">
+              <th className="px-2 py-2 text-left font-semibold">
                 Injured Person
               </th>
-              <th className="px-2 py-1 text-left font-semibold">Damage</th>
-              <th className="px-2 py-1 text-center font-semibold">Action</th>
+              <th className="px-2 py-2 text-left font-semibold">Damage</th>
             </tr>
           </thead>
           <tbody>
             {currentData.map((item, index) => (
-              <tr key={item.id} className={getRowClass(index)}>
+              <tr key={item.id} className={`${getRowClass(index)} cursor-pointer`} onClick={() => openModal(item)}>
                 <td className="px-2 py-2">{startIndex + index + 1}</td>
                 <td className="px-2 py-2">{item.accident_date}</td>
                 <td className="px-2 py-2">{item.component_code}</td>
@@ -266,7 +265,7 @@ const SafetyPatrolList: React.FC = () => {
                 <td className="px-2 py-2">{item.place}</td>
                 <td className="px-2 py-2">
                   <span
-                    className={`px-1 py-0.5 rounded text-[10px] font-semibold ${getAccidentCategoryClass(
+                    className={`px-2 py-1 rounded text-[10px] font-semibold ${getAccidentCategoryClass(
                       item.accident_category
                     )}`}
                   >
@@ -275,15 +274,6 @@ const SafetyPatrolList: React.FC = () => {
                 </td>
                 <td className="px-2 py-2">{item.injured_person}</td>
                 <td className="px-2 py-2">{item.damage}</td>
-                <td className="px-2 py-2 text-center">
-                  <button
-                    onClick={() => openModal(item)}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                  >
-                    <Eye size={12} />
-                    <span className="text-[10px]">Detail</span>
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -291,11 +281,11 @@ const SafetyPatrolList: React.FC = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-2 pt-4 border-t border-gray-200">
+      <div className="flex items-center justify-center gap-2 pt-2 border-t border-gray-200">
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Prev
         </button>
@@ -303,7 +293,7 @@ const SafetyPatrolList: React.FC = () => {
         {getPaginationNumbers().map((num, idx) => {
           const isCurrentPage = num === currentPage;
           const isEllipsis = num === "...";
-          let buttonClass = "px-3 py-1 text-sm rounded ";
+          let buttonClass = "px-3 py-1 text-xs rounded ";
           if (isCurrentPage) {
             buttonClass += "bg-blue-600 text-white font-semibold";
           } else if (isEllipsis) {
@@ -326,7 +316,7 @@ const SafetyPatrolList: React.FC = () => {
         <button
           onClick={() => goToPage(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>

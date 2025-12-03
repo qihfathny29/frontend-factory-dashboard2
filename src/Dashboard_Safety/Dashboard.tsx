@@ -18,81 +18,57 @@ const Dashboard: React.FC = () => {
   const problemDates = ["2025-12-05", "2025-12-12", "2025-12-18", "2025-12-25"];
 
   return (
-    <div className="min-h-screen bg-[#EEE9E5]">
-      {/* Main Content Area */}
-      <div className="px-6 pt-1 pb-6">
-        {/* Top Section - Row 1: 4 Card Sejajar */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
-          {/* PlantWorkedCard - 1 kolom */}
-          <div className="lg:col-span-1 max-h-[350px]">
+    <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
+      {/* Main Content Area - Grid Layout for 3 Rows */}
+      <div className="flex-1 p-2 pb-4 grid grid-rows-[35%_25%_40%] gap-2 min-h-0">
+        {/* Top Section - Row 1 */}
+        <div className="grid grid-cols-4 gap-2 min-h-0">
+          <div className="col-span-1 h-full overflow-hidden">
             <PlantWorkedCard />
           </div>
-
-          {/* SafetyAccidentChart - 1 kolom */}
-          <div className="lg:col-span-1 max-h-[350px]">
+          <div className="col-span-1 h-full overflow-hidden">
             <SafetyAccidentChart />
           </div>
-
-          {/* AccidentTypeCard - 1 kolom */}
-          <div className="lg:col-span-1 max-h-[350px]">
+          <div className="col-span-1 h-full overflow-hidden">
             <AccidentTypeCard />
           </div>
-
-          {/* SafetyPatrol - 1 kolom */}
-          <div className="lg:col-span-1">
-              <SafetyPatrolChart />
-            </div>
-        </div>
-
-        {/* Middle Section - Row 2: 6 Cards Sejajar (Calendar + 5 Accident Cards) */}
-        <div className="mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
-            {/* Calendar Card - 1 kolom */}
-            <div className="lg:col-span-1">
-              <Calender problemDates={problemDates} />
-            </div>
-
-            {/* Serious Accident Card - 1 kolom */}
-            <div className="lg:col-span-1">
-              <SeriousAccident />
-            </div>
-
-            {/* Serious Accident Subcont - 1 kolom */}
-            <div className="lg:col-span-1">
-              <SeriousAccidentSubcont />
-            </div>
-
-            {/* Sisanya 3 card kosong dulu (placeholder) */}
-            <div className="lg:col-span-1">
-              <Grade1Accident />
-            </div>
-
-            <div className="lg:col-span-1">
-              <FireAccident />
-            </div>
-            <div className="lg:col-span-1">
-              <TrafficAccident />
-            </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <SafetyPatrolChart />
           </div>
         </div>
 
-        {/* Bottom Section - Row 3: Accident List + Safety Patrol List + Summary Card */}
-        <div className="mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-            {/* Accident List - 3 kolom (persegi panjang) */}
-            <div className="lg:col-span-3">
-              <AccidentList />
-            </div>
+        {/* Middle Section - Row 2 */}
+        <div className="grid grid-cols-6 gap-2 min-h-0">
+          <div className="col-span-1 h-full overflow-hidden">
+            <Calender problemDates={problemDates} />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <SeriousAccident />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <SeriousAccidentSubcont />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <Grade1Accident />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <FireAccident />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <TrafficAccident />
+          </div>
+        </div>
 
-            {/* Safety Patrol List - 3 kolom (persegi panjang, sama dengan Accident List) */}
-            <div className="lg:col-span-3">
-              <SafetyPatrolList />
-            </div>
-
-            {/* Summary Card - 1 kolom (persegi) */}
-            <div className="lg:col-span-1">
-              <SafetyPatrol />
-            </div>
+        {/* Bottom Section - Row 3 */}
+        <div className="grid grid-cols-7 gap-2 min-h-0">
+          <div className="col-span-3 h-full overflow-hidden">
+            <AccidentList />
+          </div>
+          <div className="col-span-3 h-full overflow-hidden">
+            <SafetyPatrolList />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <SafetyPatrol />
           </div>
         </div>
       </div>

@@ -17,7 +17,9 @@ function App() {
         return (
           <div className="min-h-screen bg-[#EEE9E5] p-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">Delivery Dashboard</h1>
+              <h1 className="text-2xl font-bold text-[#1864ab]">
+                Delivery Dashboard
+              </h1>
               <p className="text-gray-600 mt-4">Coming soon...</p>
             </div>
           </div>
@@ -26,7 +28,9 @@ function App() {
         return (
           <div className="min-h-screen bg-[#EEE9E5] p-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">Manufacturing Capability Dashboard</h1>
+              <h1 className="text-2xl font-bold text-[#1864ab]">
+                Manufacturing Capability Dashboard
+              </h1>
               <p className="text-gray-600 mt-4">Coming soon...</p>
             </div>
           </div>
@@ -35,7 +39,9 @@ function App() {
         return (
           <div className="min-h-screen bg-[#EEE9E5] p-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">Management Dashboard</h1>
+              <h1 className="text-2xl font-bold text-[#1864ab]">
+                Management Dashboard
+              </h1>
               <p className="text-gray-600 mt-4">Coming soon...</p>
             </div>
           </div>
@@ -46,10 +52,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
       <Header />
-      {renderDashboard()}
+      <div className="flex-1 overflow-hidden relative">{renderDashboard()}</div>
     </div>
   );
 }

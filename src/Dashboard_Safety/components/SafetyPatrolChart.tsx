@@ -26,8 +26,18 @@ ChartJS.register(
 
 const SafetyPatrolChart: React.FC = () => {
   const months = [
-    "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
-    "Oct", "Nov", "Dec", "Jan", "Feb", "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
   ];
 
   // DATA ASLI dari setiap kategori - dengan data yang bervariasi
@@ -142,48 +152,48 @@ const SafetyPatrolChart: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col w-full">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-bold text-gray-800">Safety Patrol</h2>
+    <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col w-full">
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-sm font-bold text-gray-800">Safety Patrol</h2>
         <div className="flex items-center gap-1">
-          <button className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition border-2 border-black">
-            <X size={14} className="text-white" />
+          <button className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition border border-black">
+            <X size={10} className="text-white" />
           </button>
-          <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
-            <ChevronUp size={14} className="text-blue-700" />
+          <button className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
+            <ChevronUp size={10} className="text-blue-700" />
           </button>
-          <button className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
-            <ChevronDown size={14} className="text-blue-700" />
+          <button className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
+            <ChevronDown size={10} className="text-blue-700" />
           </button>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-3 text-xs">
+      <div className="flex flex-wrap items-center gap-2 mb-1 text-[10px]">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-blue-500 rounded"></div>
+          <div className="w-2 h-2 bg-blue-500 rounded"></div>
           <span className="font-medium">TH</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-green-500 rounded"></div>
+          <div className="w-2 h-2 bg-green-500 rounded"></div>
           <span className="font-medium">PT</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-purple-500 rounded"></div>
+          <div className="w-2 h-2 bg-purple-500 rounded"></div>
           <span className="font-medium">Elect.</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="flex items-center">
-            <div className="w-2 h-0.5 bg-red-500"></div>
-            <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
-            <div className="w-2 h-0.5 bg-red-500"></div>
+            <div className="w-1.5 h-0.5 bg-red-500"></div>
+            <div className="w-1 h-1 bg-red-500 rounded-full"></div>
+            <div className="w-1.5 h-0.5 bg-red-500"></div>
           </div>
           <span className="font-medium">Target</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="flex items-center">
-            <div className="w-2 h-0.5 bg-blue-500"></div>
-            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-            <div className="w-2 h-0.5 bg-blue-500"></div>
+            <div className="w-1.5 h-0.5 bg-blue-500"></div>
+            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+            <div className="w-1.5 h-0.5 bg-blue-500"></div>
           </div>
           <span className="font-medium">Actual</span>
         </div>
