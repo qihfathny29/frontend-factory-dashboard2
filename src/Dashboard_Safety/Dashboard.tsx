@@ -13,6 +13,7 @@ import AccidentList from "./components/AccidentList";
 import SafetyPatrolList from "./components/SafetyPatrolList";
 import SafetyPatrolChart from "./components/SafetyPatrolChart";
 import NearMissAccident from "./components/NearMissAcciden";
+import Summary from "./components/Summary";
 
 const Dashboard: React.FC = () => {
   // Example problem dates - bisa diganti dengan data dari API
@@ -20,28 +21,11 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
-      {/* Main Content Area - Grid Layout for 3 Rows */}
-      <div className="flex-1 p-2 pb-4 grid grid-rows-[35%_25%_40%] gap-2 min-h-0">
+      <div className="flex-1 p-2 pb-4 grid grid-rows-[22fr_30fr_40fr_8fr] gap-2 min-h-0">
         {/* Top Section - Row 1 */}
-        <div className="grid grid-cols-4 gap-2 min-h-0">
-          <div className="col-span-1 h-full overflow-hidden">
-            <PlantWorkedCard />
-          </div>
-          <div className="col-span-1 h-full overflow-hidden">
-            <SafetyAccidentChart />
-          </div>
-          <div className="col-span-1 h-full overflow-hidden">
-            <AccidentTypeCard />
-          </div>
-          <div className="col-span-1 h-full overflow-hidden">
-            <SafetyPatrolChart />
-          </div>
-        </div>
-
-        {/* Middle Section - Row 2 */}
         <div className="grid grid-cols-7 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <Calender problemDates={problemDates} />
+            <PlantWorkedCard />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
             <SeriousAccident />
@@ -63,6 +47,22 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Middle Section - Row 2 */}
+        <div className="grid grid-cols-7 gap-2 min-h-0">
+          <div className="col-span-1 h-full overflow-hidden">
+            <Calender problemDates={problemDates} />
+          </div>
+          <div className="col-span-2 h-full overflow-hidden">
+            <SafetyAccidentChart />
+          </div>
+          <div className="col-span-2 h-full overflow-hidden">
+            <AccidentTypeCard />
+          </div>
+          <div className="col-span-2 h-full overflow-hidden">
+            <SafetyPatrolChart />
+          </div>
+        </div>
+
         {/* Bottom Section - Row 3 */}
         <div className="grid grid-cols-7 gap-2 min-h-0">
           <div className="col-span-3 h-full overflow-hidden">
@@ -73,6 +73,13 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="col-span-1 h-full overflow-hidden">
             <SafetyPatrol />
+          </div>
+        </div>
+
+        {/* Footer Section - Row 4 */}
+        <div className="grid grid-cols-1 min-h-0">
+          <div className="h-full overflow-hidden">
+            <Summary />
           </div>
         </div>
       </div>
