@@ -2,84 +2,85 @@ import React from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
-// Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// DUMMY DATA - ini adalah data palsu untuk testing
-const accidentData = [
-  { name: "Accident", value: 0 },
-  { name: "Accident Subcont", value: 32 },
-  { name: "Near Miss Accident", value: 8 },
-  { name: "Smoke", value:12 },
-  { name: "Fire Accident", value: 15 },
-  { name: "Traffic Accident", value: 55 },
-];
+interface AccidentData {
+  id: string;
+  label: string;
+  value: number;
+  color: string;
+}
 
-// WARNA untuk pie chart
-const COLORS = ["#5459AC", "#E83C91", "#9B5DE0","#f30000ff", "#08CB00", "#FFA500" ];
+interface Props {
+  data?: AccidentData[];
+}
 
-const AccidentTypeCard: React.FC = () => {
-  // Data untuk chart
+const AccidentTypePieChart: React.FC<Props> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <div className="p-2 text-center text-xs">No Data Available</div>;
+  }
+
   const chartData = {
-    labels: accidentData.map((item) => item.name),
+    labels: data.map((item) => item.label),
     datasets: [
       {
-        data: accidentData.map((item) => item.value),
-        backgroundColor: COLORS,
-        borderColor: "#fff",
-        borderWidth: 2,
+        data: data.map((item) => item.value),
+        backgroundColor: data.map((item) => item.color),
+        borderWidth: 1,
+        // pointStyle disini dihapus saja, kita pindah ke options
       },
     ],
   };
 
-  // Options untuk chart
-  const chartOptions = {
+  const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Matikan legend bawaan chart
+        position: "right" as const,
+        labels: {
+          usePointStyle: true,
+          boxWidth: 8,
+          font: { size: 10 },
+
+          // INI SOLUSINYA: Kita generate label secara manual
+          generateLabels: (chart: any) => {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label: string, i: number) => {
+                const ds = data.datasets[0];
+
+                return {
+                  text: label,
+                  fillStyle: ds.backgroundColor[i], // Ambil warna sesuai data
+                  strokeStyle: ds.backgroundColor[i],
+                  lineWidth: 0,
+                  hidden: !chart.getDataVisibility(i),
+                  index: i,
+
+                  // LOGIKA BENTUK YANG PASTI JALAN:
+                  // Kalau labelnya 'Accident' -> 'triangle'
+                  // Sisanya -> 'rect' (persegi)
+                  pointStyle: label === "Accident" ? "triangle" : "rect",
+                  rotation: 0,
+                };
+              });
+            }
+            return [];
+          },
+        },
       },
     },
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-3 h-full flex flex-col">
-      {/* HEADER - Judul card */}
-      <h2 className="text-base font-bold text-gray-800 mb-2 text-center">
-        Accident Type
-      </h2>
-
-      {/* CONTAINER UTAMA - Flex row untuk layout kiri-kanan */}
-      <div className="flex gap-2 items-center justify-center flex-1 min-h-0 overflow-hidden">
-        {/* BAGIAN KIRI - PIE CHART */}
-        <div className="flex-1 h-full min-w-0 min-h-0 relative flex items-center justify-center">
-          <div className="h-full w-full relative">
-            <Pie data={chartData} options={chartOptions} />
-          </div>
-        </div>
-
-        {/* BAGIAN KANAN - INFORMASI DETAIL */}
-        <div className="flex flex-col justify-center gap-1 text-xs flex-shrink-0">
-          {/* MAP = looping data accident untuk membuat setiap row info */}
-          {accidentData.map((item, index) => (
-            <div key={index} className="flex items-center gap-2">
-              {/* KOTAK WARNA - warna persegi kecil sesuai pie chart */}
-              <div
-                className="w-3 h-3 rounded-sm flex-shrink-0"
-                style={{ backgroundColor: COLORS[index] }}
-              ></div>
-
-              {/* TEXT INFORMASI */}
-              <p className="font-medium text-gray-700 whitespace-nowrap">
-                {item.name}
-              </p>
-            </div>
-          ))}
-        </div>
+    <div className="bg-white rounded-lg shadow-md p-2 w-full h-full flex flex-col">
+      <h3 className="text-sm font-bold text-gray-800 mb-2">Accident Type</h3>
+      <div className="flex-1 min-h-0 relative">
+        <Pie data={chartData} options={options} />
       </div>
     </div>
   );
 };
 
-export default AccidentTypeCard;
+export default AccidentTypePieChart;

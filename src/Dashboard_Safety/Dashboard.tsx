@@ -16,6 +16,29 @@ import NearMissAccident from "./components/NearMissAcciden";
 import Summary from "./components/Summary";
 
 const Dashboard: React.FC = () => {
+  const safetyData = [
+    { id: "accident", label: "Accident", value: 0, color: "#6366f1" },
+    { id: "subcount", label: "Accdident Subcont", value: 2, color: "#EC4899" },
+    { id: "nearmiss", label: "Near Miss Accident", value: 3, color: "#A855F7" },
+    { id: "smoke", label: "Smoke", value: 2, color: "#647488" },
+    { id: "fire", label: "Fire Accident", value: 1, color: "#22C55E" },
+    { id: "traffic", label: "Traffic Accident", value: 2, color: "#EAB308" },
+  ];
+
+  // LOGIKA BARU:
+  const accidentCount = safetyData[0].value;
+  let effectiveDate = new Date();
+
+  if (accidentCount > 0) {
+    // KASUS 1: Ada Accident Hari Ini -> 0 Days
+    effectiveDate = new Date();
+  } else {
+    // KASUS 2: Tidak Ada Accident -> 1 Day (Mulai dari kemarin)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    effectiveDate = yesterday;
+  }
+
   // Example problem dates - bisa diganti dengan data dari API
   const problemDates = ["2025-12-05", "2025-12-12", "2025-12-18", "2025-12-25"];
 
@@ -25,25 +48,25 @@ const Dashboard: React.FC = () => {
         {/* Top Section - Row 1 */}
         <div className="grid grid-cols-7 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <PlantWorkedCard />
+            <PlantWorkedCard lastAccidentDate={effectiveDate} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <SeriousAccident />
+            <SeriousAccident value={safetyData[0].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <SeriousAccidentSubcont />
+            <SeriousAccidentSubcont value={safetyData[1].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <NearMissAccident />
+            <NearMissAccident value={safetyData[2].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <Smoke />
+            <Smoke value={safetyData[3].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <FireAccident />
+            <FireAccident value={safetyData[4].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <TrafficAccident />
+            <TrafficAccident value={safetyData[5].value} />
           </div>
         </div>
 
@@ -56,7 +79,7 @@ const Dashboard: React.FC = () => {
             <SafetyAccidentChart />
           </div>
           <div className="col-span-2 h-full overflow-hidden">
-            <AccidentTypeCard />
+            <AccidentTypeCard data={safetyData} />
           </div>
           <div className="col-span-2 h-full overflow-hidden">
             <SafetyPatrolChart />
