@@ -2,7 +2,6 @@ import React from "react";
 import PlantWorkedCard from "./components/PlantWorkedCard";
 import SafetyAccidentChart from "./components/SafetyAccidentChart";
 import SafetyPatrol from "./components/SafetyPatrol";
-import AccidentTypeCard from "./components/AccidentTypePieChart";
 import Calender from "./components/Calender";
 import SeriousAccident from "./components/SeriousAccident";
 import SeriousAccidentSubcont from "./components/SeriousAccidentSubcont";
@@ -11,13 +10,14 @@ import FireAccident from "./components/FireAccident";
 import TrafficAccident from "./components/TrafficAccident";
 import AccidentList from "./components/AccidentList";
 import SafetyPatrolList from "./components/SafetyPatrolList";
-import SafetyPatrolChart from "./components/SafetyPatrolChart";
+import TrafficAccidentChart from "./components/TrafficAccidentChart";
 import NearMissAccident from "./components/NearMissAcciden";
 import Summary from "./components/Summary";
+import FireAccidentChart from "./components/FireAccidentChart";
 
 const Dashboard: React.FC = () => {
   const safetyData = [
-    { id: "accident", label: "Accident", value: 1, color: "#6366f1" },
+    { id: "accident", label: "Accident", value: 0, color: "#6366f1" },
     { id: "subcount", label: "Accdident Subcont", value: 2, color: "#EC4899" },
     { id: "nearmiss", label: "Near Miss Accident", value: 3, color: "#A855F7" },
     { id: "smoke", label: "Smoke", value: 2, color: "#647488" },
@@ -50,12 +50,31 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
-      <div className="flex-1 p-2 pb-4 grid grid-rows-[25fr_35fr_45fr_8fr] gap-2 min-h-0">
+      <div className="flex-1 p-2 pb-4 grid grid-rows-[35fr_25fr_45fr_8fr] gap-2 min-h-0">
         {/* Top Section - Row 1 */}
-        <div className="grid grid-cols-7 gap-2 min-h-0">
+        <div className="grid grid-cols-5 gap-2 min-h-0">
+          <div className="col-span-1 h-full overflow-hidden">
+            <SafetyAccidentChart />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <FireAccidentChart />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <TrafficAccidentChart />
+          </div>
           <div className="col-span-1 h-full overflow-hidden">
             <PlantWorkedCard lastAccidentDate={effectiveDate} />
           </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <Calender
+              accidentDates={accidentDates}
+              warningDates={warningDates}
+            />
+          </div>
+        </div>
+
+        {/* Middle Section - Row 2 */}
+        <div className="grid grid-cols-6 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
             <SeriousAccident value={safetyData[0].value} />
           </div>
@@ -73,26 +92,6 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="col-span-1 h-full overflow-hidden">
             <TrafficAccident value={safetyData[5].value} />
-          </div>
-        </div>
-
-        {/* Middle Section - Row 2 */}
-        <div className="grid grid-cols-7 gap-2 min-h-0">
-          <div className="col-span-1 h-full overflow-hidden">
-            {/* UPDATE DISINI: Kirim accidentDates dan warningDates */}
-            <Calender
-              accidentDates={accidentDates}
-              warningDates={warningDates}
-            />
-          </div>
-          <div className="col-span-2 h-full overflow-hidden">
-            <SafetyAccidentChart />
-          </div>
-          <div className="col-span-2 h-full overflow-hidden">
-            <AccidentTypeCard data={safetyData} />
-          </div>
-          <div className="col-span-2 h-full overflow-hidden">
-            <SafetyPatrolChart />
           </div>
         </div>
 

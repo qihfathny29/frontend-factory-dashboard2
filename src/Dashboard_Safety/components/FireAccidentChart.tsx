@@ -24,7 +24,7 @@ ChartJS.register(
   Legend
 );
 
-const SafetyAccidentCard: React.FC = () => {
+const SafetyPatrolChart: React.FC = () => {
   const months = [
     "Apr",
     "May",
@@ -40,10 +40,10 @@ const SafetyAccidentCard: React.FC = () => {
     "Mar",
   ];
 
-  // DATA ASLI dari setiap kategori
-  const thData = [1, 2, 1, 0, 1, 2, 1, 0, 1, 1, 0, 2];
-  const ptData = [1, 0, 1, 2, 1, 0, 1, 1, 0, 1, 2, 1];
-  const electData = [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0];
+  // DATA ASLI dari setiap kategori - dengan data yang bervariasi
+  const thData = [2, 1, 2, 0, 1, 2, 1, 3, 1, 0, 2, 1];
+  const ptData = [1, 2, 0, 1, 2, 1, 0, 1, 2, 1, 1, 2];
+  const electData = [1, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1];
 
   // HITUNG ACTUAL otomatis (jumlah PT + TH + ELECT per bulan)
   const actualData = months.map((_, index) => {
@@ -93,13 +93,13 @@ const SafetyAccidentCard: React.FC = () => {
       {
         type: "line" as const,
         label: "Actual",
-        data: actualData, // Sekarang otomatis dihitung!
+        data: actualData,
         borderColor: "rgb(59, 130, 246)",
         backgroundColor: "rgba(59, 130, 246, 0.1)",
         borderWidth: 2,
         pointRadius: 4,
         pointBackgroundColor: "rgb(59, 130, 246)",
-        yAxisID: "y", // Pakai sumbu kiri yang sama dengan bar!
+        yAxisID: "y",
       },
     ],
   };
@@ -154,7 +154,7 @@ const SafetyAccidentCard: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col w-full">
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-sm font-bold text-gray-800">Safety Accident</h2>
+        <h2 className="text-sm font-bold text-gray-800">Fire Accident </h2>
         <div className="flex items-center gap-1">
           <button className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition border border-black">
             <X size={10} className="text-black" />
@@ -206,4 +206,4 @@ const SafetyAccidentCard: React.FC = () => {
   );
 };
 
-export default SafetyAccidentCard;
+export default SafetyPatrolChart;

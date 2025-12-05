@@ -154,10 +154,10 @@ const SafetyPatrolChart: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col w-full">
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-sm font-bold text-gray-800">Safety Patrol</h2>
+        <h2 className="text-sm font-bold text-gray-800">Traffic Accident</h2>
         <div className="flex items-center gap-1">
           <button className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition border border-black">
-            <X size={10} className="text-white" />
+            <X size={10} className="text-black" />
           </button>
           <button className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition">
             <ChevronUp size={10} className="text-blue-700" />

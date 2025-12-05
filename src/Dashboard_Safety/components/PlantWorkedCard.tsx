@@ -25,7 +25,7 @@ const PlantWorkedCard: React.FC<Props> = ({ lastAccidentDate }) => {
       </div>
 
       {/* Main Number - Dikecilkan dari 5xl ke 4xl agar tidak makan tempat */}
-      <div className="text-4xl font-black text-black leading-none mb-1">
+      <div className="text-7xl font-black text-black leading-none mb-1">
         {diffDays}
       </div>
 

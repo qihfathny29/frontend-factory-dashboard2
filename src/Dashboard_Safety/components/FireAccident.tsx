@@ -11,7 +11,7 @@ const FireAccident: React.FC<FireAccidentProps> = ({ value }) => {
       <div className="text-black text-sm font-bold">Fire Accident</div>
 
       {/* Gunakan props value disini */}
-      <div className="text-4xl font-black text-black leading-none">{value}</div>
+      <div className="text-6xl font-black text-black leading-none">{value}</div>
 
       {/* Bagian bawah statis (hardcode) atau bisa dibuat props juga kalau mau */}
       <div className="flex items-center justify-center space-x-2 w-full">
