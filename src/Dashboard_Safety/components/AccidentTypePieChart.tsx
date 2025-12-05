@@ -75,7 +75,7 @@ const AccidentTypePieChart: React.FC<Props> = ({ data }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-2 w-full h-full flex flex-col">
-      <h3 className="text-sm font-bold text-gray-800 mb-2">Accident Type</h3>
+      <h3 className="text-sm font-bold text-gray-800 mb-2 text-center">Accident Type</h3>
       <div className="flex-1 min-h-0 relative">
         <Pie data={chartData} options={options} />
       </div>

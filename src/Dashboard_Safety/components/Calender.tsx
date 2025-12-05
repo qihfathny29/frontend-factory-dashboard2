@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 
 interface CalendarProps {
-  problemDates?: string[]; // Format: "YYYY-MM-DD"
+  accidentDates?: string[]; // Tanggal Merah (Accident)
+  warningDates?: string[]; // Tanggal Kuning (Subcount, Near Miss, Smoke, Fire, Traffic)
 }
 
-const Calender: React.FC<CalendarProps> = ({ problemDates = [] }) => {
+const Calender: React.FC<CalendarProps> = ({
+  accidentDates = [],
+  warningDates = [],
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
 
@@ -27,13 +30,18 @@ const Calender: React.FC<CalendarProps> = ({ problemDates = [] }) => {
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  // Helper function to check if a date has problems
-  const hasProblems = (date: Date): boolean => {
+  // Helper: Cek apakah tanggal ada di daftar Merah
+  const isAccidentDate = (date: Date): boolean => {
     const dateString = date.toISOString().split("T")[0];
-    return problemDates.includes(dateString);
+    return accidentDates.includes(dateString);
   };
 
-  // Helper function to check if it's today
+  // Helper: Cek apakah tanggal ada di daftar Kuning
+  const isWarningDate = (date: Date): boolean => {
+    const dateString = date.toISOString().split("T")[0];
+    return warningDates.includes(dateString);
+  };
+
   const isToday = (date: Date): boolean => {
     const today = new Date();
     return (
@@ -43,39 +51,23 @@ const Calender: React.FC<CalendarProps> = ({ problemDates = [] }) => {
     );
   };
 
-  // Helper function to check if date is selected
-  const isSelected = (date: Date): boolean => {
-    if (!selectedDate) return false;
-    return (
-      date.getDate() === selectedDate.getDate() &&
-      date.getMonth() === selectedDate.getMonth() &&
-      date.getFullYear() === selectedDate.getFullYear()
-    );
-  };
 
-  // Get calendar days for the current month
+
   const getCalendarDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-
     const daysInMonth = lastDay.getDate();
     const startDayOfWeek = firstDay.getDay();
-
     const days: (Date | null)[] = [];
 
-    // Add empty slots for days before the first day of the month
     for (let i = 0; i < startDayOfWeek; i++) {
       days.push(null);
     }
-
-    // Add all days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(new Date(year, month, day));
     }
-
     return days;
   };
 
@@ -85,41 +77,43 @@ const Calender: React.FC<CalendarProps> = ({ problemDates = [] }) => {
       new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
     );
   };
-
   const goToNextMonth = () => {
     setCurrentDate(
       new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
     );
   };
-
   const handleMonthSelect = (monthIndex: number) => {
     setCurrentDate(new Date(currentDate.getFullYear(), monthIndex, 1));
     setShowMonthPicker(false);
   };
-
   const handleYearSelect = (year: number) => {
     setCurrentDate(new Date(year, currentDate.getMonth(), 1));
     setShowYearPicker(false);
   };
 
-  const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-  };
 
-  // Get background color for a date
+  // LOGIKA WARNA BARU DISINI:
   const getDateBgColor = (date: Date): string => {
-    if (isSelected(date) || isToday(date)) {
+    // 1. Prioritas Utama: Hari Ini (Abu-abu)
+    if (isToday(date)) {
       return "bg-gray-400";
     }
-    if (hasProblems(date)) {
+
+    // 2. Prioritas Kedua: Accident (Merah)
+    if (isAccidentDate(date)) {
       return "bg-red-500";
     }
+
+    // 3. Prioritas Ketiga: Warning/Other Incidents (Kuning)
+    if (isWarningDate(date)) {
+      return "bg-yellow-400 text-black"; // Tambah text-black biar tulisan kebaca di kuning
+    }
+
+    // 4. Default: Aman (Hijau)
     return "bg-green-500";
   };
 
   const calendarDays = getCalendarDays();
-
-  // Generate year options (current year ± 10 years)
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from(
     { length: 21 },
@@ -243,25 +237,42 @@ const Calender: React.FC<CalendarProps> = ({ problemDates = [] }) => {
 
       {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-0.5 flex-1 overflow-y-auto">
-        {calendarDays.map((date, index) => (
-          <div
-            key={date ? date.toISOString() : `empty-${index}`}
-            className="aspect-square"
-          >
-            {date ? (
-              <button
-                onClick={() => handleDateClick(date)}
-                className={`w-full h-full flex items-center justify-center rounded text-white text-[10px] font-medium transition-all hover:opacity-80 ${getDateBgColor(
-                  date
-                )}`}
-              >
-                {date.getDate()}
-              </button>
-            ) : (
-              <div className="w-full h-full"></div>
-            )}
-          </div>
-        ))}
+        {calendarDays.map((date, index) => {
+          // Cek apakah ini tanggal Accident (Merah) DAN bukan Hari Ini (Abu-abu)
+          // Karena kamu minta "yang merah" saja yang jadi segitiga.
+          const isRedAccident = date && isAccidentDate(date) && !isToday(date);
+
+          return (
+            <div
+              key={date ? date.toISOString() : `empty-${index}`}
+              className="aspect-square"
+            >
+              {date ? (
+                <button
+                  // LOGIKA BENTUK SEGITIGA:
+                  // Gunakan clip-path: polygon(...) untuk membentuk segitiga sama kaki
+                  style={
+                    isRedAccident
+                      ? { clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }
+                      : {}
+                  }
+                  className={`w-full h-full flex justify-center text-white text-[10px] font-medium transition-all hover:opacity-80 
+                    ${getDateBgColor(date)} 
+                    ${
+                      isRedAccident
+                        ? "items-end pb-0.5" // Kalau Segitiga: Teks ditaruh di bawah biar muat
+                        : "items-center rounded" // Kalau Kotak: Teks di tengah & sudut tumpul
+                    }
+                  `}
+                >
+                  {date.getDate()}
+                </button>
+              ) : (
+                <div className="w-full h-full"></div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

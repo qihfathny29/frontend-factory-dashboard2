@@ -20,7 +20,7 @@ const PlantWorkedCard: React.FC<Props> = ({ lastAccidentDate }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2 w-full h-full flex flex-col items-center justify-center text-center">
       {/* Header Text - Dikecilkan sedikit ke text-xs agar lebih lega */}
-      <div className="text-black text-xs font-bold mb-1">
+      <div className="text-black text-sm font-bold mb-1">
         This Plant has Worked
       </div>
 

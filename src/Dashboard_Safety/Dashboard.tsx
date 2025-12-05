@@ -17,7 +17,7 @@ import Summary from "./components/Summary";
 
 const Dashboard: React.FC = () => {
   const safetyData = [
-    { id: "accident", label: "Accident", value: 0, color: "#6366f1" },
+    { id: "accident", label: "Accident", value: 1, color: "#6366f1" },
     { id: "subcount", label: "Accdident Subcont", value: 2, color: "#EC4899" },
     { id: "nearmiss", label: "Near Miss Accident", value: 3, color: "#A855F7" },
     { id: "smoke", label: "Smoke", value: 2, color: "#647488" },
@@ -39,12 +39,18 @@ const Dashboard: React.FC = () => {
     effectiveDate = yesterday;
   }
 
-  // Example problem dates - bisa diganti dengan data dari API
-  const problemDates = ["2025-12-05", "2025-12-12", "2025-12-18", "2025-12-25"];
+
+
+  // DATA TANGGAL:
+  // 1. Tanggal Merah (Accident)
+  const accidentDates = ["2025-12-05"];
+
+  // 2. Tanggal Kuning (Subcount, Near Miss, Smoke, Fire, Traffic)
+  const warningDates = ["2025-12-12", "2025-12-18", "2025-12-25"];
 
   return (
     <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
-      <div className="flex-1 p-2 pb-4 grid grid-rows-[22fr_30fr_40fr_8fr] gap-2 min-h-0">
+      <div className="flex-1 p-2 pb-4 grid grid-rows-[25fr_35fr_45fr_8fr] gap-2 min-h-0">
         {/* Top Section - Row 1 */}
         <div className="grid grid-cols-7 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
@@ -73,7 +79,11 @@ const Dashboard: React.FC = () => {
         {/* Middle Section - Row 2 */}
         <div className="grid grid-cols-7 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <Calender problemDates={problemDates} />
+            {/* UPDATE DISINI: Kirim accidentDates dan warningDates */}
+            <Calender
+              accidentDates={accidentDates}
+              warningDates={warningDates}
+            />
           </div>
           <div className="col-span-2 h-full overflow-hidden">
             <SafetyAccidentChart />

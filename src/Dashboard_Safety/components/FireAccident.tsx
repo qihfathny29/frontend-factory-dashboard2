@@ -8,7 +8,7 @@ interface FireAccidentProps {
 const FireAccident: React.FC<FireAccidentProps> = ({ value }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2 w-full h-full flex flex-col items-center justify-between text-center">
-      <div className="text-black text-xs font-bold">Fire Accident</div>
+      <div className="text-black text-sm font-bold">Fire Accident</div>
 
       {/* Gunakan props value disini */}
       <div className="text-4xl font-black text-black leading-none">{value}</div>

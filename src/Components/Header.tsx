@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import image from "./../assets/Live.png";
+import { Sun, Moon } from "lucide-react";
 
-export const Header = () => {
+interface HeaderProps {
+  activeTab?: string;
+}
+
+export const Header = ({ activeTab }: HeaderProps) => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   useEffect(() => {
@@ -28,7 +33,7 @@ export const Header = () => {
     <div className="w-full min-h-[50px] sm:min-h-[60px] px-3 sm:px-6 py-2 bg-[#EEE9E5]">
       <div className="flex items-center justify-between gap-2 sm:gap-3 w-full h-full">
         {/* Live Button with Icon */}
-        <button className="flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 bg-[var(--colors-accents-red)] rounded-lg hover:opacity-90 transition-opacity flex-shrink-0">
+        <button className="flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 bg-[var(--colors-accents-red)] rounded hover:opacity-90 transition-opacity flex-shrink-0">
           <div className="relative w-4 h-4 sm:w-5 sm:h-5">
             <img
               className="w-full h-full object-contain"
@@ -40,6 +45,17 @@ export const Header = () => {
             Live
           </span>
         </button>
+
+        {activeTab === "Mfg.Capability" && (
+          <div className="flex items-center gap-1 ml-2">
+            <div className="p-1.5 rounded-md bg-gray-200 text-gray-500">
+              <Sun className="w-5 h-5" />
+            </div>
+            <div className="p-1.5 rounded-md bg-[#1864ab] text-white">
+              <Moon className="w-5 h-5" />
+            </div>
+          </div>
+        )}
 
         {/* Asaichi Title */}
         <div className="font-bold text-[#1864ab] text-lg sm:text-xl whitespace-nowrap flex-shrink-0">
