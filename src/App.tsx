@@ -7,13 +7,14 @@ import MfgDashboard from "./Dashboard mfg/Dashboard";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Safety");
+  const [selectedPlants, setSelectedPlants] = useState<string[]>(["all"]);
 
   const renderDashboard = () => {
     switch (activeTab) {
       case "Safety":
         return <SafetyDashboard />;
       case "Quality":
-        return <QualityDashboard />;
+        return <QualityDashboard selectedPlants={selectedPlants} />;
       case "Delivery":
         return (
           <div className="min-h-screen bg-[#EEE9E5] p-6">
@@ -45,7 +46,12 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Navbar 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab}
+        selectedPlants={selectedPlants}
+        onPlantsChange={setSelectedPlants}
+      />
 
       <Header activeTab={activeTab}/>
       <div className="flex-1 overflow-hidden relative">{renderDashboard()}</div>

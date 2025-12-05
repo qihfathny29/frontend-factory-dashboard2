@@ -25,13 +25,14 @@ const DropdownButton = ({ label, onClick }: DropdownButtonProps) => (
 interface NavbarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  selectedPlants: string[];
+  onPlantsChange: (plants: string[]) => void;
 }
 
-export const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
+export const Navbar = ({ activeTab, onTabChange, selectedPlants, onPlantsChange }: NavbarProps) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>(["all"]);
-  const [selectedPlants, setSelectedPlants] = useState<string[]>(["all"]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(["all"]);
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(["fy25-yearly"]);
 
@@ -109,7 +110,7 @@ export const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
               <div className="absolute top-full mt-2 left-0 z-50">
                 <DropdownPlant
                   selectedPlants={selectedPlants}
-                  onSelectionChange={setSelectedPlants}
+                  onSelectionChange={onPlantsChange}
                   onApply={closeDropdown}
                 />
               </div>

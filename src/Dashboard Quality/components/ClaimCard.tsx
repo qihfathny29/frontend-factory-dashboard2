@@ -1,54 +1,68 @@
 import React from "react";
 
 interface Props {
+  title: string;
   value: number;
-  // TAMBAHKAN PROP INI NANTI:
-  // change?: number; // <- selisih dibanding periode sebelumnya (positif = naik, negatif = turun, 0 atau tidak ada = sama)
+  changeValue: number;
+  changeType: "increase" | "decrease";
+  fiscalYearValue: number;
 }
 
-const SeriousAccident: React.FC<Props> = ({ value }) => {
-  // === LOGIC DINAMIS YANG BISA DIAKTIFKAN NANTI ===
-  // Hapus komentar di bawah ini kalau sudah siap pakai fitur naik/turun
-  
-  // const change = props.change ?? 0; // default 0 kalau tidak dikirim
-  // const isIncrease = change > 0;
-  // const isDecrease = change < 0;
-  // const arrow = isIncrease ? "▲" : isDecrease ? "▼" : "";
-  // const textLabel = isIncrease ? "Increased vs." : isDecrease ? "Decreased vs." : "Same as";
-  // const colorClass = isIncrease ? "text-red-500" : isDecrease ? "text-[#34C759]" : "text-blue-500";
-  // const displayValue = change === 0 ? "0" : Math.abs(change);
+const CHANGE_TYPE_CONFIG = {
+  increase: {
+    arrow: "▲",
+    textLabel: "Increased vs.",
+    colorClass: "text-red-500 border-red-500",
+  },
+  decrease: {
+    arrow: "▼",
+    textLabel: "Decreased vs.",
+    colorClass: "text-[#34C759] border-[#34C759]",
+  },
+} as const;
+
+const ClaimCard: React.FC<Props> = ({
+  title,
+  value,
+  changeValue,
+  changeType,
+  fiscalYearValue,
+}) => {
+  const { arrow, textLabel, colorClass } = CHANGE_TYPE_CONFIG[changeType];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-2 w-full h-full flex flex-col items-center justify-between text-center">
-      <div className="text-black text-xs font-bold">0KM Claim (Official Count)</div>
-      <div className="text-4xl font-black text-black leading-none">{value}</div>
+    <div className="bg-white rounded-lg p-2 w-full h-full flex flex-col items-center justify-between text-center">
+      <div className="text-black text-xs font-bold">{title}</div>
+      <div className="text-8xl font-black text-black leading-none">{value}</div>
 
-      {/* BAGIAN INI YANG AKAN JADI DINAMIS */}
       <div className="flex items-center justify-center space-x-2 w-full">
+        {/* Change Section */}
         <div className="flex flex-col items-center">
-          {/* HAPUS KOMENTAR DI BAWAH & GANTI BAGIAN INI KALAU SUDAH SIAP */}
-          <span className="text-red-500 text-xs font-bold">▲ 2</span>
-          <span className="text-[8px] text-red-500">Increased vs.</span>
-
-          {/* UNCOMMENT INI KALAU SUDAH SIAP FITUR DINAMIS */}
-          {/* <span className={`${colorClass} text-xs font-bold`}>
-            {arrow} {displayValue}
-          </span>
-          <span className={`text-[8px] ${colorClass}`}>
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1 border-2 ${colorClass} bg-white rounded-md`}
+          >
+            <span className="text-2xs font-bold">
+              {arrow} {changeValue}
+            </span>
+          </div>
+          <span className={`text-[10px] mt-1 ${colorClass.split(" ")[0]}`}>
             {textLabel}
-          </span> */}
+          </span>
         </div>
 
+        {/* Separator */}
         <div className="h-6 w-px bg-gray-300"></div>
 
-        {/* Bagian FY'24 biarkan tetap hardcode dulu atau bisa juga dibikin props nanti */}
+        {/* Fiscal Year Section */}
         <div className="flex flex-col items-center">
-          <span className="text-blue-500 text-xs font-bold">0</span>
-          <span className="text-[8px] text-blue-500">Fiscal Year '24</span>
+          <span className="text-blue-500 text-2xs font-bold">
+            {fiscalYearValue}
+          </span>
+          <span className="text-[12px] text-blue-500">Fiscal Year '24</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default SeriousAccident;
+export default ClaimCard;
