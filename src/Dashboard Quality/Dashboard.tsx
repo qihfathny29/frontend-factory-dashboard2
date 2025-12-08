@@ -117,10 +117,12 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
           <div className="col-span-1 h-full overflow-hidden">
             <ClaimCard 
               title="Quality Cost Lost" 
-              value={15} 
+              value={150000000} 
               changeValue={5} 
               changeType="increase" 
-              fiscalYearValue={12} 
+              fiscalYearValue={120000000}
+              isCurrency={true}
+              previousValue={145000000}
             />
           </div>
         </div>
