@@ -43,9 +43,25 @@ const CHART_CONFIG = {
 interface DeliveryChartProps {
   title: string;
   chartType: "quality" | "ontime";
-  data: number[];
-  target: number[];
+  data?: number[];
+  target?: number[];
 }
+
+// Dummy data for charts
+const DUMMY_DATA = {
+  "Delv. Quality Issues": {
+    data: [1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 0, 0],
+    target: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  "OES Ontime Ratio": {
+    data: [100, 101, 102, 98, 104, 88, 105, 99, 103, 93, 106, 101],
+    target: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+  },
+  "OEM Ontime Ratio": {
+    data: [55, 91, 73, 98, 64, 88, 79, 99, 58, 93, 67, 95],
+    target: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+  }
+} as const;
 
 interface LegendItemProps {
   color: string;
@@ -111,10 +127,21 @@ const HeaderControls: React.FC<HeaderControlsProps> = ({ isAchieved }) => (
 const DeliveryChart: React.FC<DeliveryChartProps> = ({ 
   title, 
   chartType,
-  data,
-  target
+  data: propData,
+  target: propTarget
 }) => {
   const isOntimeChart = chartType === "ontime";
+  
+  // Use prop data or fallback to dummy data
+  const data = useMemo(() => {
+    const dummyChartData = DUMMY_DATA[title as keyof typeof DUMMY_DATA];
+    return propData || dummyChartData?.data || [];
+  }, [propData, title]);
+
+  const target = useMemo(() => {
+    const dummyChartData = DUMMY_DATA[title as keyof typeof DUMMY_DATA];
+    return propTarget || dummyChartData?.target || [];
+  }, [propTarget, title]);
 
   // Calculate accumulation for quality chart
   const accumulatedData = useMemo(() => {
@@ -134,20 +161,22 @@ const DeliveryChart: React.FC<DeliveryChartProps> = ({
   // Check if achieved
   const isAchieved = useMemo(() => {
     if (isOntimeChart) {
-      // For ontime ratio, check if all values meet or exceed target
-      return data.every((value, index) => value >= target[index]);
+      // For ontime ratio, check if average meets or exceeds average target
+      const avgData = data.reduce((sum, val) => sum + val, 0) / data.length;
+      const avgTarget = target.reduce((sum, val) => sum + val, 0) / target.length;
+      return avgData >= avgTarget;
     } else {
-      // For quality issues, check if accumulation is at or below target
-      const totalAccumulation = accumulatedData[accumulatedData.length - 1] || 0;
-      const totalTarget = target.reduce((sum, value) => sum + value, 0);
-      return totalAccumulation <= totalTarget;
+      // For quality issues, check if total is at or below target
+      const totalData = data.reduce((sum, val) => sum + val, 0);
+      const totalTarget = target.reduce((sum, val) => sum + val, 0);
+      return totalData <= totalTarget;
     }
-  }, [data, target, accumulatedData, isOntimeChart]);
+  }, [data, target, isOntimeChart]);
 
   // Chart options
   const chartOptions = useMemo(() => {
     if (isOntimeChart) {
-      // Ontime Ratio Chart - only left Y-axis (percentage)
+      // Ontime Ratio Chart
       return {
         responsive: true,
         maintainAspectRatio: false,

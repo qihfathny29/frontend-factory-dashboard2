@@ -3,18 +3,6 @@ import DeliveryChart from "./components/DeliveryChart";
 import DeliveryCard from "./components/DeliveryCard";
 
 const Dashboard: React.FC = () => {
-  // Data dummy untuk Delv. Quality Issues
-  const qualityIssuesData = [1, 2, 1, 0, 1, 2, 1, 0, 1];
-  const qualityIssuesTarget = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-  // Data dummy untuk OES Ontime Ratio
-  const oesOntimeData = [55, 91, 73, 98, 64, 88, 79, 99, 58, 93, 67, 95];
-  const oesOntimeTarget = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100];
-
-  // Data dummy untuk OEM Ontime Ratio
-  const oemOntimeData = [55, 91, 73, 98, 64, 88, 79, 99, 58, 93, 67, 95];
-  const oemOntimeTarget = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100];
-
   return (
     <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
       <div className="flex-1 p-2 pb-4 grid grid-rows-[30fr_30fr_40fr] gap-2 min-h-0">
@@ -25,24 +13,18 @@ const Dashboard: React.FC = () => {
             <DeliveryChart
               title="Delv. Quality Issues"
               chartType="quality"
-              data={qualityIssuesData}
-              target={qualityIssuesTarget}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden"> 
             <DeliveryChart
               title="OES Ontime Ratio"
               chartType="ontime"
-              data={oesOntimeData}
-              target={oesOntimeTarget}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden"> 
             <DeliveryChart
               title="OEM Ontime Ratio"
               chartType="ontime"
-              data={oemOntimeData}
-              target={oemOntimeTarget}
             />
           </div>
         </div>
