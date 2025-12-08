@@ -32,7 +32,7 @@ function App() {
           </div>
         );
       default:
-        return <SafetyDashboard />;
+        return <SafetyDashboard selectedPlants={selectedPlants}/>;
     }
   };
 
