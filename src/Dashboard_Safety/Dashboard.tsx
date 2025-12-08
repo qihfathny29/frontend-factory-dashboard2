@@ -25,7 +25,7 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
           ? 'bekasi'
           : 'all';
   const safetyData = [
-    { id: "accident", label: "Accident", value: 0, color: "#6366f1" },
+    { id: "accident", label: "Accident", value: 1, color: "#6366f1" },
     { id: "subcount", label: "Accdident Subcont", value: 2, color: "#EC4899" },
     { id: "nearmiss", label: "Near Miss Accident", value: 3, color: "#A855F7" },
     { id: "smoke", label: "Smoke", value: 2, color: "#647488" },

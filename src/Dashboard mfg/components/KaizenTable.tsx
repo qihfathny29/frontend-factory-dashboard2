@@ -39,36 +39,38 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
 
   return (
     <div className="w-full h-full flex flex-col">
-      {/* Title */}
+      {/* Title - TETAP SAMA */}
       <h2 className="text-xs font-bold text-center mb-1">{title}</h2>
 
-      {/* Table */}
+      {/* Table - DIGEDEIN */}
       <div className="flex-1 overflow-auto min-h-0">
-        <table className="w-full text-[8px] border-collapse">
+        <table className="w-full text-[10px] border-collapse">
+          {/* ↑ UBAH dari text-[8px] jadi text-[10px] */}
           <thead>
             <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
+                {/* ↑ UBAH dari px-0.5 py-0.5 jadi px-1.5 py-1 */}
                 Date
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
                 Shift
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
                 Detail
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
                 Category
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
                 Item
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
                 MC
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-left font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-left font-semibold">
                 Problem & Analysis
               </th>
-              <th className="border border-gray-300 px-0.5 py-0.5 text-center font-semibold">
+              <th className="border border-gray-300 px-1.5 py-1 text-center font-semibold">
                 Progress
               </th>
             </tr>
@@ -76,30 +78,33 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
           <tbody>
             {currentData.map((item, index) => (
               <tr key={index} className="border-b border-gray-200">
-                <td className="border border-gray-300 px-0.5 py-0.5 whitespace-nowrap">
+                <td className="border border-gray-300 px-1.5 py-1 whitespace-nowrap">
+                  {/* ↑ UBAH dari px-0.5 py-0.5 jadi px-1.5 py-1 */}
                   {item.date}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5">
+                <td className="border border-gray-300 px-1.5 py-1">
                   {item.shift}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5 text-[7px]">
+                <td className="border border-gray-300 px-1.5 py-1 text-[9px]">
+                  {/* ↑ UBAH dari text-[7px] jadi text-[9px] */}
                   {item.detail}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5">
+                <td className="border border-gray-300 px-1.5 py-1">
                   {item.category}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5">
+                <td className="border border-gray-300 px-1.5 py-1">
                   {item.item}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5 text-[7px]">
+                <td className="border border-gray-300 px-1.5 py-1 text-[9px]">
                   {item.mc}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5 text-[7px] max-w-[150px]">
+                <td className="border border-gray-300 px-1.5 py-1 text-[9px] max-w-[150px]">
                   {item.problemAnalysis}
                 </td>
-                <td className="border border-gray-300 px-0.5 py-0.5 text-center">
+                <td className="border border-gray-300 px-1.5 py-1 text-center">
                   <span
-                    className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-medium ${
+                    className={`inline-block px-2 py-1 rounded text-[9px] font-medium ${
+                      /* ↑ UBAH dari px-1.5 py-0.5 text-[8px] jadi px-2 py-1 text-[9px] */
                       item.progress === "Open"
                         ? "bg-blue-100 text-blue-700 border border-blue-300"
                         : "bg-gray-200 text-gray-700 border border-gray-400"
@@ -114,19 +119,18 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center gap-1 mt-1">
+      {/* Pagination - DIGEDEIN & HAPUS BACKGROUND */}
+      <div className="flex items-center justify-center gap-2 mt-2">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-1.5 py-0.5 text-[8px] rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-xs text-gray-700 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed font-medium"
         >
           Prev
         </button>
 
         {[...Array(totalPages)].map((_, index) => {
           const page = index + 1;
-          // Show first page, last page, current page, and pages around current
           if (
             page === 1 ||
             page === totalPages ||
@@ -136,10 +140,10 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
-                className={`px-1.5 py-0.5 text-[8px] rounded ${
+                className={`text-xs font-medium px-2 py-1 rounded ${
                   currentPage === page
                     ? "bg-blue-600 text-white font-bold"
-                    : "bg-gray-200 hover:bg-gray-300"
+                    : "text-gray-700 hover:text-blue-600"
                 }`}
               >
                 {page}
@@ -147,7 +151,7 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
             );
           } else if (page === currentPage - 2 || page === currentPage + 2) {
             return (
-              <span key={page} className="px-0.5 text-gray-500 text-[8px]">
+              <span key={page} className="text-xs text-gray-500">
                 ...
               </span>
             );
@@ -158,7 +162,7 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-1.5 py-0.5 text-[8px] rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-xs text-gray-700 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed font-medium"
         >
           Next
         </button>

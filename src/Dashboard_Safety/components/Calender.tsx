@@ -51,7 +51,14 @@ const Calender: React.FC<CalendarProps> = ({
     );
   };
 
-
+  // TAMBAH FUNGSI INI:
+  const isFutureDate = (date: Date): boolean => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset jam ke 00:00 biar perbandingan tanggal saja
+    const checkDate = new Date(date);
+    checkDate.setHours(0, 0, 0, 0);
+    return checkDate > today;
+  };
 
   const getCalendarDays = () => {
     const year = currentDate.getFullYear();
@@ -91,26 +98,30 @@ const Calender: React.FC<CalendarProps> = ({
     setShowYearPicker(false);
   };
 
-
   // LOGIKA WARNA BARU DISINI:
-  const getDateBgColor = (date: Date): string => {
+  const getDateStyles = (date: Date): { bg: string; text: string } => {
     // 1. Prioritas Utama: Hari Ini (Abu-abu)
     if (isToday(date)) {
-      return "bg-gray-400";
+      return { bg: "bg-gray-400", text: "text-white" };
     }
 
-    // 2. Prioritas Kedua: Accident (Merah)
+    // 2. BARU: Tanggal Masa Depan (Putih dengan text hitam)
+    if (isFutureDate(date)) {
+      return { bg: "bg-white border border-gray-200", text: "text-black" };
+    }
+
+    // 3. Prioritas Kedua: Accident (Merah) - hanya untuk tanggal yang sudah lewat
     if (isAccidentDate(date)) {
-      return "bg-red-500";
+      return { bg: "bg-red-500", text: "text-white" };
     }
 
-    // 3. Prioritas Ketiga: Warning/Other Incidents (Kuning)
+    // 4. Prioritas Ketiga: Warning/Other Incidents (Kuning)
     if (isWarningDate(date)) {
-      return "bg-yellow-400 text-black"; // Tambah text-black biar tulisan kebaca di kuning
+      return { bg: "bg-yellow-400", text: "text-black" };
     }
 
-    // 4. Default: Aman (Hijau)
-    return "bg-green-500";
+    // 5. Default: Aman (Hijau) - untuk tanggal yang sudah lewat dan aman
+    return { bg: "bg-green-500", text: "text-white" };
   };
 
   const calendarDays = getCalendarDays();
@@ -238,9 +249,8 @@ const Calender: React.FC<CalendarProps> = ({
       {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-0.5 flex-1 overflow-y-auto">
         {calendarDays.map((date, index) => {
-          // Cek apakah ini tanggal Accident (Merah) DAN bukan Hari Ini (Abu-abu)
-          // Karena kamu minta "yang merah" saja yang jadi segitiga.
           const isRedAccident = date && isAccidentDate(date) && !isToday(date);
+          const dateStyles = date ? getDateStyles(date) : { bg: "", text: "" };
 
           return (
             <div
@@ -249,19 +259,18 @@ const Calender: React.FC<CalendarProps> = ({
             >
               {date ? (
                 <button
-                  // LOGIKA BENTUK SEGITIGA:
-                  // Gunakan clip-path: polygon(...) untuk membentuk segitiga sama kaki
                   style={
                     isRedAccident
                       ? { clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }
                       : {}
                   }
-                  className={`w-full h-full flex justify-center text-white text-[10px] font-medium transition-all hover:opacity-80 
-                    ${getDateBgColor(date)} 
+                  className={`w-full h-full flex justify-center text-[10px] font-medium transition-all hover:opacity-80 
+                    ${dateStyles.bg} 
+                    ${dateStyles.text}
                     ${
                       isRedAccident
-                        ? "items-end pb-0.5" // Kalau Segitiga: Teks ditaruh di bawah biar muat
-                        : "items-center rounded" // Kalau Kotak: Teks di tengah & sudut tumpul
+                        ? "items-end pb-0.5"
+                        : "items-center rounded"
                     }
                   `}
                 >
