@@ -1,20 +1,23 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend
-} from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import type { KPSProgressConfig } from "../config/componentTypes";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface KPSProgressKeduaProps {
-  open: number;   // contoh: 5
-  closed: number; // contoh: 15
+interface KPSProgressCardProps {
+  config: KPSProgressConfig;
+  open: number;
+  closed: number;
 }
 
-const KPSProgressKedua: React.FC<KPSProgressKeduaProps> = ({ open, closed }) => {
+const KPSProgressCard: React.FC<KPSProgressCardProps> = ({
+  config,
+  open,
+  closed,
+}) => {
+  const { title } = config;
+
   const data = {
     labels: ["Open", "Closed"],
     datasets: [
@@ -37,12 +40,9 @@ const KPSProgressKedua: React.FC<KPSProgressKeduaProps> = ({ open, closed }) => 
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-4 w-full h-full  flex flex-col items-center">
-      
+    <div className="bg-white shadow-md rounded-xl p-4 w-full h-full flex flex-col items-center">
       {/* TITLE */}
-      <h2 className="text-sm font-semibold mb-3 text-center">
-        N/G Issue KPS Progress
-      </h2>
+      <h2 className="text-sm font-semibold mb-3 text-center">{title}</h2>
 
       {/* DONUT CHART */}
       <div className="relative flex-1 w-full min-h-0 flex items-center justify-center py-1">
@@ -51,7 +51,6 @@ const KPSProgressKedua: React.FC<KPSProgressKeduaProps> = ({ open, closed }) => 
 
       {/* NUMBERS BELOW */}
       <div className="flex justify-center items-center gap-4 mt-1">
-
         {/* Open */}
         <div className="text-center">
           <p className="text-lg font-bold text-blue-600">{open}</p>
@@ -63,13 +62,14 @@ const KPSProgressKedua: React.FC<KPSProgressKeduaProps> = ({ open, closed }) => 
 
         {/* Closed */}
         <div className="text-center">
-          <p className="text-lg font-bold text-blue-600 loading-none">{closed}</p>
+          <p className="text-lg font-bold text-blue-600 loading-none">
+            {closed}
+          </p>
           <p className="text-xs text-blue-600">Closed</p>
         </div>
-
       </div>
     </div>
   );
 };
 
-export default KPSProgressKedua;
+export default KPSProgressCard;

@@ -19,17 +19,8 @@ interface AccidentData {
   image_id: string;
 }
 
-const AccidentList: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedAccident, setSelectedAccident] = useState<AccidentData | null>(
-    null
-  );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const itemsPerPage = 3;
-
-  // Dummy data dengan struktur baru
-  const allData: AccidentData[] = [
+// Dummy data - moved outside component to avoid recreating on every render
+const allData: AccidentData[] = [
     {
       id: 1,
       accident_date: "2 April 2025",
@@ -129,6 +120,15 @@ const AccidentList: React.FC = () => {
         "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400",
     },
   ];
+
+const AccidentList: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAccident, setSelectedAccident] = useState<AccidentData | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const itemsPerPage = 3;
 
   // Filter data
   const filteredData = useMemo(() => {

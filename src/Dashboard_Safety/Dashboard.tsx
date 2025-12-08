@@ -1,21 +1,29 @@
 import React from "react";
 import PlantWorkedCard from "./components/PlantWorkedCard";
-import SafetyAccidentChart from "./components/SafetyAccidentChart";
 import SafetyPatrol from "./components/SafetyPatrol";
 import Calender from "./components/Calender";
-import SeriousAccident from "./components/SeriousAccident";
-import SeriousAccidentSubcont from "./components/SeriousAccidentSubcont";
-import Smoke from "./components/Smoke";
-import FireAccident from "./components/FireAccident";
-import TrafficAccident from "./components/TrafficAccident";
 import AccidentList from "./components/AccidentList";
 import SafetyPatrolList from "./components/SafetyPatrolList";
-import TrafficAccidentChart from "./components/TrafficAccidentChart";
-import NearMissAccident from "./components/NearMissAcciden";
 import Summary from "./components/Summary";
-import FireAccidentChart from "./components/FireAccidentChart";
+import AccidentCard from "./components/AccidentCard";
+import AccidentChart from "./components/AccidentChart";
+import { ACCIDENT_TYPES, CHART_TYPES } from "./config/accidentTypes";
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  selectedPlants: string[];
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
+  // Map selectedPlants dari Navbar dropdown ke format selectedPlant untuk chart
+  // selectedPlants berisi ID: "all", "fajar", "bekasi" (bukan label!)
+  const selectedPlant: 'all' | 'fajar' | 'bekasi' = 
+    selectedPlants.includes('all') || selectedPlants.length === 0 
+      ? 'all' 
+      : selectedPlants.includes('fajar') 
+        ? 'fajar' 
+        : selectedPlants.includes('bekasi')
+          ? 'bekasi'
+          : 'all';
   const safetyData = [
     { id: "accident", label: "Accident", value: 0, color: "#6366f1" },
     { id: "subcount", label: "Accdident Subcont", value: 2, color: "#EC4899" },
@@ -54,13 +62,13 @@ const Dashboard: React.FC = () => {
         {/* Top Section - Row 1 */}
         <div className="grid grid-cols-5 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <SafetyAccidentChart />
+            <AccidentChart config={CHART_TYPES.SAFETY} selectedPlant={selectedPlant} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <FireAccidentChart />
+            <AccidentChart config={CHART_TYPES.FIRE} selectedPlant={selectedPlant} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <TrafficAccidentChart />
+            <AccidentChart config={CHART_TYPES.TRAFFIC} selectedPlant={selectedPlant} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
             <PlantWorkedCard lastAccidentDate={effectiveDate} />
@@ -76,22 +84,22 @@ const Dashboard: React.FC = () => {
         {/* Middle Section - Row 2 */}
         <div className="grid grid-cols-6 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <SeriousAccident value={safetyData[0].value} />
+            <AccidentCard config={ACCIDENT_TYPES.ACCIDENT} value={safetyData[0].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <SeriousAccidentSubcont value={safetyData[1].value} />
+            <AccidentCard config={ACCIDENT_TYPES.SUBCOUNT} value={safetyData[1].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <NearMissAccident value={safetyData[2].value} />
+            <AccidentCard config={ACCIDENT_TYPES.NEAR_MISS} value={safetyData[2].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <Smoke value={safetyData[3].value} />
+            <AccidentCard config={ACCIDENT_TYPES.SMOKE} value={safetyData[3].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <FireAccident value={safetyData[4].value} />
+            <AccidentCard config={ACCIDENT_TYPES.FIRE} value={safetyData[4].value} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <TrafficAccident value={safetyData[5].value} />
+            <AccidentCard config={ACCIDENT_TYPES.TRAFFIC} value={safetyData[5].value} />
           </div>
         </div>
 

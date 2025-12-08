@@ -13,7 +13,7 @@ function App() {
   const renderDashboard = () => {
     switch (activeTab) {
       case "Safety":
-        return <SafetyDashboard />;
+        return <SafetyDashboard selectedPlants={selectedPlants} />;
       case "Quality":
         return <QualityDashboard selectedPlants={selectedPlants} />;
       case "Delivery":
