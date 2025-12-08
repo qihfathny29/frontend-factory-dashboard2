@@ -4,6 +4,7 @@ import ClaimChart from "./components/ClaimChart";
 import WarrantyClaim from "./components/WarrantyClaim";
 import ClaimCard from "./components/ClaimCard";
 import ClaimList from "./components/ClaimList";
+import CriticalList from "./components/CriticalList";
 import Calender from "./components/Calender";
 
 interface DashboardProps {
@@ -134,6 +135,9 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
           </div>
           <div className="col-span-3 h-full overflow-hidden">
             <ClaimList />
+          </div>
+          <div className="col-span-3 h-full overflow-hidden">
+            <CriticalList />
           </div>
         </div>
       </div>
