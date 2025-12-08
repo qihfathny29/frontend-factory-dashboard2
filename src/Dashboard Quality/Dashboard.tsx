@@ -47,32 +47,32 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
       <div className="flex-1 p-2 pb-4 grid grid-rows-[30fr_30fr_40fr] gap-2 min-h-0">
         
         {/* Row 1 */}
-        <div className="flex flex-wrap gap-2 min-h-0">
-          <div className="flex-grow basis-96 h-full overflow-hidden"> 
+        <div className="grid grid-cols-13 gap-2 min-h-0">
+          <div className="col-span-3 h-full overflow-hidden">
             <ClaimChart
               selectedPlants={selectedPlants}
               title="0KM Claim"
               dataOverride={claimChartData.chart1}
             />
           </div>
-          <div className="flex-grow basis-96 h-full overflow-hidden"> 
+          <div className="col-span-3 h-full overflow-hidden">
             <ClaimChart
               selectedPlants={selectedPlants}
               title="Critical & Near-Miss"
               dataOverride={claimChartData.chart2}
             />
           </div>
-          <div className="flex-grow basis-60 h-full overflow-hidden"> 
+          <div className="col-span-3 h-full overflow-hidden"> 
             <ClaimChart
               selectedPlants={selectedPlants}
               title="Warranty Claim"
               dataOverride={claimChartData.chart3}
             />
           </div>
-          <div className="flex-grow basis-32 h-full overflow-hidden"> 
+          <div className="col-span-2 h-full overflow-hidden">
             <PlantWorkedCard lastAccidentDate={effectiveDate} />
           </div>
-          <div className="flex-grow basis-32 h-full overflow-hidden">
+          <div className="col-span-2 h-full overflow-hidden">
             <Calender claimDates={claimDates} />
           </div>
         </div>

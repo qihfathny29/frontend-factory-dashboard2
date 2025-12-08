@@ -141,7 +141,7 @@ const CRITICAL_PROBLEM_DATA: CriticalProblemData[] = [
   },
 ];
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 3;
 const SEARCH_FIELDS = ['part_name', 'dnia_pn', 'customer', 'cust_pn', 'car_model', 'country'] as const;
 
 const getRowClass = (index: number): string =>

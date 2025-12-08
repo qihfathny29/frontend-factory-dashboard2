@@ -121,7 +121,7 @@ const SAFETY_PATROL_DATA: SafetyPatrolData[] = [
 ];
 
 // Constants
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 3;
 const SEARCH_FIELDS = ['problem', 'part_number', 'customer', 'product', 'bu_group'] as const;
 
 // Helper functions

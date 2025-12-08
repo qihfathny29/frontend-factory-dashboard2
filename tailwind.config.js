@@ -12,6 +12,10 @@ module.exports = {
         "greysblue-grey100": "var(--greysblue-grey100)",
         "greysblue-grey700": "var(--greysblue-grey700)",
       },
+      gridTemplateColumns: {
+        // custom col count
+        "13": "repeat(13, minmax(0, 1fr))",
+      },
     },
   },
   plugins: [],

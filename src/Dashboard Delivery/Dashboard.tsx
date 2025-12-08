@@ -1,6 +1,8 @@
 import React from "react";
 import DeliveryChart from "./components/DeliveryChart";
 import DeliveryCard from "./components/DeliveryCard";
+import DeliveryIssueList from "./components/DeliveryList";
+import { InventoryPartsCard, InventoryFGCard } from "./components/DeliveryInventory";
 
 const Dashboard: React.FC = () => {
   return (
@@ -84,14 +86,15 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Row 3 */}
-        <div className="grid grid-cols-7 gap-2 min-h-0">
-          <div className="col-span-3 h-full overflow-hidden bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-sm font-bold text-gray-800">Delivery List</h3>
-            <p className="text-xs text-gray-500 mt-2">Coming soon...</p>
+        <div className="grid grid-cols-5 gap-2 min-h-0">
+          <div className="col-span-3 h-full overflow-hidden">
+            <DeliveryIssueList />
           </div>
-          <div className="col-span-4 h-full overflow-hidden bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-sm font-bold text-gray-800">Delivery Details</h3>
-            <p className="text-xs text-gray-500 mt-2">Coming soon...</p>
+          <div className="col-span-1 h-full overflow-hidden">
+            <InventoryPartsCard />
+          </div>
+          <div className="col-span-1 h-full overflow-hidden">
+            <InventoryFGCard />
           </div>
         </div>
       </div>
