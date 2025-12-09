@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import PlantWorkedCard from "./components/PlantWorkedCard";
 import SafetyPatrol from "./components/SafetyPatrol";
 import Calender from "./components/Calender";
@@ -57,8 +58,14 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
   const warningDates = ["2025-12-12", "2025-12-18", "2025-12-25"];
 
   return (
-    <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
-      <div className="flex-1 p-2 pb-4 grid grid-rows-[35fr_25fr_45fr_8fr] gap-2 min-h-0">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden"
+    >
+      <div className="flex-1 p-2 pb-4 grid grid-rows-[35fr_35fr_45fr_8fr] gap-2 min-h-0">
         {/* Top Section - Row 1 */}
         <div className="grid grid-cols-5 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
@@ -123,7 +130,7 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

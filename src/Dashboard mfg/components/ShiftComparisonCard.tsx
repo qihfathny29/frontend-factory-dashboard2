@@ -35,10 +35,10 @@ const ShiftComparisonCard: React.FC<ShiftComparisonCardProps> = ({
   return (
     <div className="w-full h-full bg-white rounded-lg flex flex-col items-center justify-center">
       {/* Title */}
-      <h3 className="text-xs font-bold text-black mb-2">{title}</h3>
+      <h3 className="text-lg font-bold text-black mb-8">{title}</h3>
 
       {/* Total Number */}
-      <div className="text-4xl font-bold text-black mb-3">
+      <div className="text-6xl font-bold text-black mb-7">
         {formatNumber(total)}
       </div>
 
@@ -46,10 +46,10 @@ const ShiftComparisonCard: React.FC<ShiftComparisonCardProps> = ({
       <div className="flex items-center gap-3">
         {/* Day Shift */}
         <div className="flex flex-col items-center">
-          <div className="text-lg font-bold text-blue-600">
+          <div className="text-xl font-bold text-blue-600">
             {formatNumber(dayShift)}
           </div>
-          <div className="text-[10px] text-blue-600 font-medium">Day Shift</div>
+          <div className="text-[14px] text-blue-600 font-medium">Day Shift</div>
         </div>
 
         {/* Divider */}
@@ -57,10 +57,10 @@ const ShiftComparisonCard: React.FC<ShiftComparisonCardProps> = ({
 
         {/* Night Shift */}
         <div className="flex flex-col items-center">
-          <div className="text-lg font-bold text-blue-600">
+          <div className="text-xl font-bold text-blue-600">
             {formatNumber(nightShift)}
           </div>
-          <div className="text-[10px] text-blue-600 font-medium">
+          <div className="text-[14px] text-blue-600 font-medium">
             Night Shift
           </div>
         </div>

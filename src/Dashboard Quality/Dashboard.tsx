@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import PlantWorkedCard from "./components/PlantWorkedCard";
 import ClaimChart from "./components/ClaimChart";
 import WarrantyClaim from "./components/WarrantyClaim";
@@ -43,7 +44,15 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
   };
 
   return (
-    <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
+    <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden"
+      >
+
+          <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
       <div className="flex-1 p-2 pb-4 grid grid-rows-[30fr_30fr_40fr] gap-2 min-h-0">
         
         {/* Row 1 */}
@@ -142,6 +151,7 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
         </div>
       </div>
     </div>
+    </motion.div>
   );
 };
 

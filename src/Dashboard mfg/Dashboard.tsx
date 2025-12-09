@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import NGByProduct from "./components/NGByProduct";
 import LossTimeBreakdown from "./components/LossTimeBreakdown";
 import PieChartCard from "./components/PieChartCard";
@@ -95,7 +96,14 @@ const DashboardMfg: React.FC = () => {
   ];
 
   return (
-    <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden p-2 pb-6">
+    <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }} 
+          className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden"
+          >
+          <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden p-2 pb-6">
       <div className="flex-1 grid grid-rows-[40fr_35fr_45fr] gap-2 min-h-0">
         {/* --- ROW 1 --- */}
         <div className="grid grid-cols-6 gap-2 min-h-0">
@@ -104,8 +112,8 @@ const DashboardMfg: React.FC = () => {
             <PieChartCard config={PIE_CHART_TYPES.OPERATING_RATE} value={82.7} />
           </div>
 
-          {/* Card 2: Loss Time Breakdown */}
-          <div className="col-span-2 bg-white rounded-lg shadow p-4 flex items-center justify-center">
+          {/* Card 2: Loss Time Breakdown - UBAH INI ❌→✅ */}
+          <div className="col-span-2 bg-white rounded-lg shadow p-4 h-full overflow-hidden flex flex-col">
             <LossTimeBreakdown />
           </div>
 
@@ -114,8 +122,8 @@ const DashboardMfg: React.FC = () => {
             <PieChartCard config={PIE_CHART_TYPES.NG_RATIO} value={2.54} />
           </div>
 
-          {/* Card 4: NG By Product */}
-          <div className="col-span-2 bg-white rounded-lg shadow p-4 flex items-center justify-center">
+          {/* Card 4: NG By Product - UBAH INI ❌→✅ */}
+          <div className="col-span-2 bg-white rounded-lg shadow p-4 h-full overflow-hidden flex flex-col">
             <NGByProduct />
           </div>
         </div>
@@ -174,7 +182,8 @@ const DashboardMfg: React.FC = () => {
 
         {/* --- ROW 3 --- */}
         <div className="grid grid-cols-6 gap-2 min-h-0">
-          <div className="col-span-2 bg-white rounded-lg shadow p-4 flex items-center justify-center">
+          {/* Kaizen Table 1 - UBAH INI ❌→✅ */}
+          <div className="col-span-2 bg-white rounded-lg shadow p-4 h-full overflow-hidden flex flex-col">
             <KaizenTable
               config={KAIZEN_TABLE_TYPES.OR_ISSUE}
               data={kaizenData}
@@ -187,7 +196,8 @@ const DashboardMfg: React.FC = () => {
               closed={15}
             />
           </div>
-          <div className="col-span-2 bg-white rounded-lg shadow p-4 flex items-center justify-center">
+          {/* Kaizen Table 2 - UBAH INI ❌→✅ */}
+          <div className="col-span-2 bg-white rounded-lg shadow p-4 h-full overflow-hidden flex flex-col">
             <KaizenTable
               config={KAIZEN_TABLE_TYPES.NG_LOSS_TIME}
               data={kaizenData}
@@ -203,6 +213,7 @@ const DashboardMfg: React.FC = () => {
         </div>
       </div>
     </div>
+  </motion.div>
   );
 };
 

@@ -50,7 +50,7 @@ const AccidentCard: React.FC<AccidentCardProps> = ({ config, value }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2 w-full h-full flex flex-col items-center justify-between text-center">
       <div className="text-black text-sm font-bold">{title}</div>
-      <div className="text-6xl font-black text-black leading-none">{value}</div>
+      <div className="text-7xl font-black text-black leading-none">{value}</div>
       <div className="flex items-center justify-center space-x-2 w-full">
         {renderTrend()}
         <div className="h-6 w-px bg-gray-300"></div>

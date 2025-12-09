@@ -52,10 +52,10 @@ const TrendComparisonCard: React.FC<TrendComparisonCardProps> = ({
   return (
     <div className="w-full h-full bg-white rounded-lg flex flex-col items-center justify-center">
       {/* Title */}
-      <h3 className="text-xs font-bold text-black mb-2">{title}</h3>
+      <h3 className="text-lg font-bold text-black mb-8">{title}</h3>
 
       {/* Current Value */}
-      <div className="text-4xl font-bold text-black mb-2">
+      <div className="text-6xl font-bold text-black mb-7">
         {current.toLocaleString("id-ID")}
         {suffix}
       </div>

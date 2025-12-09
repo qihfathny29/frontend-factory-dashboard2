@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import DeliveryChart from "./components/DeliveryChart";
 import DeliveryCard from "./components/DeliveryCard";
 import DeliveryIssueList from "./components/DeliveryList";
@@ -6,6 +7,14 @@ import { InventoryPartsCard, InventoryFGCard } from "./components/DeliveryInvent
 
 const Dashboard: React.FC = () => {
   return (
+    <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden"
+        >
+
     <div className="h-full bg-[#EEE9E5] flex flex-col overflow-hidden">
       <div className="flex-1 p-2 pb-4 grid grid-rows-[30fr_30fr_40fr] gap-2 min-h-0">
         
@@ -99,6 +108,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
+    </motion.div>
   );
 };
 
