@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { X } from "lucide-react";
 import header from "./../../assets/Header.png";
 import backgroundImage from "./../../assets/Background.png";
 
@@ -12,6 +13,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onGoToPreview }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showAlreadyLoggedInModal, setShowAlreadyLoggedInModal] = useState(false);
   
   // Check session on mount
   const checkSession = () => {
@@ -39,6 +41,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onGoToPreview }) => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if already logged in
+    if (hasSession) {
+      setShowAlreadyLoggedInModal(true);
+      return;
+    }
 
     // Validation
     if (!email.trim() || !password.trim()) {
@@ -155,6 +163,42 @@ export const Login: React.FC<LoginProps> = ({ onLogin, onGoToPreview }) => {
           </p>
         </div>
       </div>
+
+      {/* Already Logged In Modal */}
+      {showAlreadyLoggedInModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-lg">
+              <h3 className="text-lg font-bold text-gray-800">Already Logged In</h3>
+              <button 
+                onClick={() => setShowAlreadyLoggedInModal(false)} 
+                className="p-2 hover:bg-gray-100 rounded-full transition"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="px-6 py-6">
+              <p className="text-sm text-gray-600">
+                You are already logged in. Would you like to go to the landing page?
+              </p>
+            </div>
+
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 rounded-b-lg">
+              <button
+                onClick={() => {
+                  setShowAlreadyLoggedInModal(false);
+                  onGoToPreview();
+                }}
+                className="w-full px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition text-sm"
+              >
+                Go to Landing Page
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
