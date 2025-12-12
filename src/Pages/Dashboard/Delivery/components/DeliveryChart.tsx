@@ -12,9 +12,15 @@ import {
   Legend,
   type ChartData,
 } from "chart.js";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import AchievedIcon from "./../../../../Assets/Achieved.png";
-import NotAchievedIcon from "./../../../../Assets/Notachieved.png";
+import { LegendItem } from "../../../../Components/Charts/ChartLegend";
+import { ChartHeaderControls } from "../../../../Components/Charts/ChartHeader";
+import { 
+  calculateAccumulation,
+  isQualityTargetAchieved,
+  isOntimeTargetAchieved,
+  FISCAL_MONTHS,
+  CHART_COLORS
+} from "../../../../Base/Utils/chartHelpers";
 
 ChartJS.register(
   CategoryScale,
@@ -26,19 +32,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const MONTHS = [
-  "Apr", "May", "Jun", "Jul", "Aug", "Sep",
-  "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"
-];
-
-const CHART_CONFIG = {
-  colors: {
-    primary: "#A02B93",
-    target: "rgb(239, 68, 68)",
-    accumulation: "rgb(59, 130, 246)"
-  }
-} as const;
 
 interface DeliveryChartProps {
   title: string;
@@ -63,66 +56,6 @@ const DUMMY_DATA = {
   }
 } as const;
 
-interface LegendItemProps {
-  color: string;
-  label: string;
-  type?: "bar" | "line";
-}
-
-interface HeaderControlsProps {
-  isAchieved: boolean;
-}
-
-interface IconProps {
-  color: string;
-}
-
-const LineIcon: React.FC<IconProps> = ({ color }) => (
-  <div className="flex items-center">
-    <div className="w-1.5 h-0.5" style={{ backgroundColor: color }} />
-    <div className="w-1 h-1 rounded-full" style={{ backgroundColor: color }} />
-    <div className="w-1.5 h-0.5" style={{ backgroundColor: color }} />
-  </div>
-);
-
-const BarIcon: React.FC<IconProps> = ({ color }) => (
-  <div className="w-2 h-2 rounded" style={{ backgroundColor: color }} />
-);
-
-const LegendItem: React.FC<LegendItemProps> = ({ color, label, type = "bar" }) => {
-  return (
-    <div className="flex items-center gap-1">
-      {type === "line" ? (
-        <LineIcon color={color} />
-      ) : (
-        <BarIcon color={color} />
-      )}
-      <span className="font-medium">{label}</span>
-    </div>
-  );
-};
-
-const HeaderControls: React.FC<HeaderControlsProps> = ({ isAchieved }) => (
-  <div className="flex items-center gap-1">
-    <img
-      src={isAchieved ? AchievedIcon : NotAchievedIcon}
-      alt={isAchieved ? "Achieved" : "Not Achieved"}
-      className="w-4 h-4 rounded-full border border-black"
-    />
-    <button
-      className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition"
-      aria-label="Expand chart"
-    >
-      <ChevronUp size={10} className="text-blue-700" />
-    </button>
-    <button
-      className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition"
-      aria-label="Collapse chart"
-    >
-      <ChevronDown size={10} className="text-blue-700" />
-    </button>
-  </div>
-);
 
 const DeliveryChart: React.FC<DeliveryChartProps> = ({ 
   title, 
@@ -143,35 +76,20 @@ const DeliveryChart: React.FC<DeliveryChartProps> = ({
     return propTarget || dummyChartData?.target || [];
   }, [propTarget, title]);
 
-  // Calculate accumulation for quality chart
+  // Calculate accumulation for quality chart using utility
   const accumulatedData = useMemo(() => {
     if (isOntimeChart) return [];
-    
-    const result: number[] = [];
-    let runningTotal = 0;
-
-    data.forEach((value) => {
-      runningTotal += value;
-      result.push(runningTotal);
-    });
-
-    return result;
+    return calculateAccumulation(data);
   }, [data, isOntimeChart]);
 
-  // Check if achieved
+  // Check if achieved using utility functions
   const isAchieved = useMemo(() => {
     if (isOntimeChart) {
-      // For ontime ratio, check if average meets or exceeds average target
-      const avgData = data.reduce((sum, val) => sum + val, 0) / data.length;
-      const avgTarget = target.reduce((sum, val) => sum + val, 0) / target.length;
-      return avgData >= avgTarget;
+      return isOntimeTargetAchieved(data, target);
     } else {
-      // For quality issues, check if total is at or below target
-      const totalData = data.reduce((sum, val) => sum + val, 0);
-      const totalTarget = target.reduce((sum, val) => sum + val, 0);
-      return totalData <= totalTarget;
+      return isQualityTargetAchieved(accumulatedData, target);
     }
-  }, [data, target, isOntimeChart]);
+  }, [data, target, isOntimeChart, accumulatedData]);
 
   // Chart options
   const chartOptions = useMemo(() => {
@@ -220,7 +138,7 @@ const DeliveryChart: React.FC<DeliveryChartProps> = ({
         }
       };
     } else {
-      // Quality Issues Chart - both Y-axes
+      // Quality Issues Chart
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -270,12 +188,12 @@ const DeliveryChart: React.FC<DeliveryChartProps> = ({
   const chartData: ChartData<"line" | "bar", number[], string> = useMemo(() => {
     const datasets = [];
 
-    // Main data (bar)
+    // Main data
     datasets.push({
       type: "bar" as const,
       label: title,
       data: [...data],
-      backgroundColor: CHART_CONFIG.colors.primary,
+      backgroundColor: CHART_COLORS.primary,
       yAxisID: "y"
     });
 
@@ -284,30 +202,30 @@ const DeliveryChart: React.FC<DeliveryChartProps> = ({
       type: "line" as const,
       label: "Target",
       data: [...target],
-      borderColor: CHART_CONFIG.colors.target,
-      backgroundColor: `${CHART_CONFIG.colors.target}1a`,
+      borderColor: CHART_COLORS.target,
+      backgroundColor: `${CHART_COLORS.target}1a`,
       borderWidth: 2,
       pointRadius: 0,
       yAxisID: isOntimeChart ? "y" : "y1"
     });
 
-    // Accumulation line (only for quality chart)
+    // Accumulation line
     if (!isOntimeChart) {
       datasets.push({
         type: "line" as const,
         label: "Accumulation",
         data: accumulatedData,
-        borderColor: CHART_CONFIG.colors.accumulation,
-        backgroundColor: `${CHART_CONFIG.colors.accumulation}1a`,
+        borderColor: CHART_COLORS.accumulation,
+        backgroundColor: `${CHART_COLORS.accumulation}1a`,
         borderWidth: 2,
         pointRadius: 4,
-        pointBackgroundColor: CHART_CONFIG.colors.accumulation,
+        pointBackgroundColor: CHART_COLORS.accumulation,
         yAxisID: "y1"
       });
     }
 
     return {
-      labels: [...MONTHS],
+      labels: [...FISCAL_MONTHS],
       datasets
     };
   }, [title, data, target, accumulatedData, isOntimeChart]);
@@ -316,14 +234,14 @@ const DeliveryChart: React.FC<DeliveryChartProps> = ({
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col w-full">
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-sm font-bold text-gray-800">{title}</h2>
-        <HeaderControls isAchieved={isAchieved} />
+        <ChartHeaderControls isAchieved={isAchieved} />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-1 text-[10px]">
-        <LegendItem color={CHART_CONFIG.colors.primary} label={title} />
-        <LegendItem color={CHART_CONFIG.colors.target} label="Target" type="line" />
+        <LegendItem color={CHART_COLORS.primary} label={title} />
+        <LegendItem color={CHART_COLORS.target} label="Target" type="line" />
         {!isOntimeChart && (
-          <LegendItem color={CHART_CONFIG.colors.accumulation} label="Accumulation" type="line" />
+          <LegendItem color={CHART_COLORS.accumulation} label="Accumulation" type="line" />
         )}
       </div>
 

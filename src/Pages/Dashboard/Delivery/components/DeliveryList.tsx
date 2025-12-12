@@ -1,7 +1,14 @@
 import React, { useState, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import {
+  getPaginationNumbers,
+  getRowClass,
+  filterDataBySearch,
+  getPaginatedData,
+  getTotalPages,
+} from "../../../../Base/Utils/tableHelpers";
 
-interface DeliveryIssueData {
+interface DeliveryIssueData extends Record<string, unknown> {
   id: number;
   occur_date: string;
   plant: string;
@@ -79,30 +86,6 @@ const DELIVERY_ISSUES_DATA: DeliveryIssueData[] = [
 
 const ITEMS_PER_PAGE = 3;
 const SEARCH_FIELDS = ['plant', 'customer'] as const;
-
-const getRowClass = (index: number): string =>
-  `border-b border-gray-200 hover:bg-gray-100 transition-colors ${
-    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-  }`;
-
-const getPaginationNumbers = (currentPage: number, totalPages: number): (number | string)[] => {
-  if (totalPages <= 5) {
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
-  }
-
-  const pages: (number | string)[] = [1];
-  
-  if (currentPage > 3) pages.push("...");
-  
-  for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-    if (!pages.includes(i)) pages.push(i);
-  }
-  
-  if (currentPage < totalPages - 2) pages.push("...");
-  if (!pages.includes(totalPages)) pages.push(totalPages);
-  
-  return pages;
-};
 
 interface DetailFieldProps {
   label: string;
@@ -291,21 +274,15 @@ const DeliveryIssueList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIssue, setSelectedIssue] = useState<DeliveryIssueData | null>(null);
 
+  // Filter data using tableHelpers
   const filteredData = useMemo(() => {
-    if (!searchQuery.trim()) return DELIVERY_ISSUES_DATA;
-    
-    const query = searchQuery.toLowerCase();
-    return DELIVERY_ISSUES_DATA.filter((item) =>
-      SEARCH_FIELDS.some((field) => 
-        item[field].toLowerCase().includes(query)
-      )
-    );
+    return filterDataBySearch<DeliveryIssueData>(DELIVERY_ISSUES_DATA, searchQuery, [...SEARCH_FIELDS]);
   }, [searchQuery]);
 
-  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  // Pagination using tableHelpers
+  const totalPages = getTotalPages(filteredData.length, ITEMS_PER_PAGE);
   const currentData = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredData.slice(start, start + ITEMS_PER_PAGE);
+    return getPaginatedData(filteredData, currentPage, ITEMS_PER_PAGE);
   }, [filteredData, currentPage]);
 
   const handleSearchChange = (value: string) => {

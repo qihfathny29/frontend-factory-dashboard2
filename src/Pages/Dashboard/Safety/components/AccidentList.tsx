@@ -1,7 +1,14 @@
 import React, { useState, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import {
+  getPaginationNumbers,
+  getRowClass,
+  filterDataBySearch,
+  getPaginatedData,
+  getTotalPages,
+} from "../../../../Base/Utils/tableHelpers";
 
-interface AccidentData {
+interface AccidentData extends Record<string, unknown> {
   id: number;
   accident_date: string;
   component_code: string;
@@ -19,7 +26,7 @@ interface AccidentData {
   image_id: string;
 }
 
-// Dummy data - moved outside component to avoid recreating on every render
+// Dummy data
 const allData: AccidentData[] = [
     {
       id: 1,
@@ -130,21 +137,19 @@ const AccidentList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 3;
 
-  // Filter data
+  // Filter data using tableHelpers
   const filteredData = useMemo(() => {
-    return allData.filter(
-      (item) =>
-        item.damage.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.place.toLowerCase().includes(searchQuery.toLowerCase() ) ||
-        item.accident_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return filterDataBySearch<AccidentData>(allData, searchQuery, [
+      "damage",
+      "place",
+      "accident_name",
+    ]);
   }, [searchQuery]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // Pagination using tableHelpers
+  const totalPages = getTotalPages(filteredData.length, itemsPerPage);
+  const currentData = getPaginatedData(filteredData, currentPage, itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
 
   // Handle modal
   const openModal = (accident: AccidentData) => {
@@ -164,41 +169,12 @@ const AccidentList: React.FC = () => {
     }
   };
 
-  const getPaginationNumbers = () => {
-    const numbers = [];
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        numbers.push(i);
-      }
-    } else {
-      numbers.push(1);
-      if (currentPage > 3) numbers.push("...");
-      for (
-        let i = Math.max(2, currentPage - 1);
-        i <= Math.min(totalPages - 1, currentPage + 1);
-        i++
-      ) {
-        if (!numbers.includes(i)) numbers.push(i);
-      }
-      if (currentPage < totalPages - 2) numbers.push("...");
-      numbers.push(totalPages);
-    }
-    return numbers;
-  };
-
   const getAccidentCategoryClass = (category: string) => {
     if (category === "Fire Accident") return "bg-red-100 text-red-700";
     if (category === "Grade 1 Accident") return "bg-yellow-100 text-yellow-700";
     if (category === "Serious Accident") return "bg-purple-100 text-purple-700";
     if (category === "Traffic Accident") return "bg-blue-100 text-blue-700";
     return "bg-gray-100 text-gray-700";
-  };
-
-  const getRowClass = (index: number) => {
-    const baseClass =
-      "border-b border-gray-200 hover:bg-gray-100 transition-colors";
-    const bgClass = index % 2 === 0 ? "bg-white" : "bg-gray-50";
-    return `${baseClass} ${bgClass}`;
   };
 
   return (
@@ -290,7 +266,7 @@ const AccidentList: React.FC = () => {
           Prev
         </button>
 
-        {getPaginationNumbers().map((num, idx) => {
+        {getPaginationNumbers(currentPage, totalPages).map((num, idx) => {
           const isCurrentPage = num === currentPage;
           const isEllipsis = num === "...";
           let buttonClass = "px-3 py-1 text-xs rounded ";

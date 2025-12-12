@@ -1,7 +1,14 @@
 import React, { useState, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import {
+  getPaginationNumbers,
+  getRowClass,
+  filterDataBySearch,
+  getPaginatedData,
+  getTotalPages,
+} from "../../../../Base/Utils/tableHelpers";
 
-interface SafetyPatrolData {
+interface SafetyPatrolData extends Record<string, unknown> {
   id: number;
   occur_date: string;
   bu_group: string;
@@ -21,7 +28,7 @@ interface SafetyPatrolData {
   image_id: string;
 }
 
-// Dummy data (moved outside component)
+// Dummy data
 const SAFETY_PATROL_DATA: SafetyPatrolData[] = [
   {
     id: 1,
@@ -123,32 +130,6 @@ const SAFETY_PATROL_DATA: SafetyPatrolData[] = [
 // Constants
 const ITEMS_PER_PAGE = 3;
 const SEARCH_FIELDS = ['problem', 'part_number', 'customer', 'product', 'bu_group'] as const;
-
-// Helper functions
-const getRowClass = (index: number): string =>
-  `border-b border-gray-200 hover:bg-gray-100 transition-colors ${
-    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-  }`;
-
-const getPaginationNumbers = (currentPage: number, totalPages: number): (number | string)[] => {
-  const pages: (number | string)[] = [];
-  
-  if (totalPages <= 5) {
-    for (let i = 1; i <= totalPages; i++) pages.push(i);
-  } else {
-    pages.push(1);
-    if (currentPage > 3) pages.push("...");
-    
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-      if (!pages.includes(i)) pages.push(i);
-    }
-    
-    if (currentPage < totalPages - 2) pages.push("...");
-    if (!pages.includes(totalPages)) pages.push(totalPages);
-  }
-  
-  return pages;
-};
 
 // Modal Component
 interface ModalProps {
@@ -307,23 +288,15 @@ const SafetyPatrolList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSafetyPatrol, setSelectedSafetyPatrol] = useState<SafetyPatrolData | null>(null);
 
-  // Filter data berdasarkan search query
+  // Filter data using tableHelpers
   const filteredData = useMemo(() => {
-    if (!searchQuery.trim()) return SAFETY_PATROL_DATA;
-    
-    const query = searchQuery.toLowerCase();
-    return SAFETY_PATROL_DATA.filter((item) =>
-      SEARCH_FIELDS.some((field) => 
-        item[field].toLowerCase().includes(query)
-      )
-    );
+    return filterDataBySearch<SafetyPatrolData>(SAFETY_PATROL_DATA, searchQuery, [...SEARCH_FIELDS]);
   }, [searchQuery]);
 
-  // Pagination data
-  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  // Pagination using tableHelpers
+  const totalPages = getTotalPages(filteredData.length, ITEMS_PER_PAGE);
   const currentData = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredData.slice(start, start + ITEMS_PER_PAGE);
+    return getPaginatedData(filteredData, currentPage, ITEMS_PER_PAGE);
   }, [filteredData, currentPage]);
 
   // Handlers

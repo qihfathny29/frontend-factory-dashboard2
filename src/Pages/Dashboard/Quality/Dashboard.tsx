@@ -1,12 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-import PlantWorkedCard from "./components/PlantWorkedCard";
+import PlantWorkedCard from "../../../Components/PlantWorkedCard";
+import DashboardCalendar, { type CalendarEvent } from "../../../Components/Calendar/DashboardCalendar";
+import MetricCard from "../../../Components/Cards/MetricCard";
 import ClaimChart from "./components/ClaimChart";
 import WarrantyClaim from "./components/WarrantyClaim";
-import ClaimCard from "./components/ClaimCard";
 import ClaimList from "./components/ClaimList";
 import CriticalList from "./components/CriticalList";
-import Calender from "./components/Calender";
 
 interface DashboardProps {
   selectedPlants: string[];
@@ -18,8 +18,8 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
   yesterday.setDate(yesterday.getDate() - 1);
   const effectiveDate = yesterday;
 
-  // Data tanggal claim (dummy)
-  const claimDates = ["2025-12-01", "2025-12-02"];
+  // Data tanggal claim
+  const claimDates = ["2025-12-01", "2025-12-05", "2025-12-10"];
 
   // Data dummy untuk 3 ClaimChart
   const claimChartData = {
@@ -79,60 +79,68 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
             />
           </div>
           <div className="col-span-2 h-full overflow-hidden">
-            <PlantWorkedCard lastAccidentDate={effectiveDate} />
+            <PlantWorkedCard 
+              lastAccidentDate={effectiveDate} 
+              contextText="an 0KM Claim"
+            />
           </div>
           <div className="col-span-2 h-full overflow-hidden">
-            <Calender claimDates={claimDates} />
+            <DashboardCalendar
+              events={claimDates.map((date): CalendarEvent => ({ date, type: 'critical' }))}
+            />
           </div>
         </div>
 
         {/* Row 2 */}
         <div className="grid grid-cols-5 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <ClaimCard 
-              title="0KM Claim (Official Count)" 
-              value={0} 
-              changeValue={2} 
-              changeType="increase" 
-              fiscalYearValue={0} 
+            <MetricCard
+              title="0KM Claim (Official Count)"
+              value={0}
+              trend={{ type: "increase", value: 2 }}
+              fiscalYear={{ value: 0 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <ClaimCard 
-              title="0KM Claim (No Count)" 
-              value={5} 
-              changeValue={1} 
-              changeType="decrease" 
-              fiscalYearValue={3} 
+            <MetricCard
+              title="0KM Claim (No Count)"
+              value={5}
+              trend={{ type: "decrease", value: 1 }}
+              fiscalYear={{ value: 3 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <ClaimCard 
-              title="Critical Quality" 
-              value={12} 
-              changeValue={4} 
-              changeType="increase" 
-              fiscalYearValue={8} 
+            <MetricCard
+              title="Critical Quality"
+              value={12}
+              trend={{ type: "increase", value: 4 }}
+              fiscalYear={{ value: 8 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <ClaimCard 
-              title="Near-Miss Problem" 
-              value={7} 
-              changeValue={3} 
-              changeType="decrease" 
-              fiscalYearValue={10} 
+            <MetricCard
+              title="Near-Miss Problem"
+              value={7}
+              trend={{ type: "decrease", value: 3 }}
+              fiscalYear={{ value: 10 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <ClaimCard 
-              title="Quality Cost Lost" 
-              value={150000000} 
-              changeValue={5} 
-              changeType="increase" 
-              fiscalYearValue={120000000}
-              isCurrency={true}
-              previousValue={145000000}
+            <MetricCard
+              title="Quality Cost Lost"
+              value={150000000}
+              trend={{ type: "increase", value: 5 }}
+              fiscalYear={{ value: 120000000 }}
+              formatting={{ 
+                isCurrency: true, 
+                valueSize: 'small',
+                showPercentage: true,
+                previousValue: 145000000
+              }}
             />
           </div>
         </div>

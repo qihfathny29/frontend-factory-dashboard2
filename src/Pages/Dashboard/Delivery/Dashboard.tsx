@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
+import MetricCard from "../../../Components/Cards/MetricCard";
 import DeliveryChart from "./components/DeliveryChart";
-import DeliveryCard from "./components/DeliveryCard";
 import DeliveryIssueList from "./components/DeliveryList";
 import { InventoryPartsCard, InventoryFGCard } from "./components/DeliveryInventory";
 
@@ -43,53 +43,48 @@ const Dashboard: React.FC = () => {
         {/* Row 2 */}
         <div className="grid grid-cols-5 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <DeliveryCard
-              key="delay-delivery"
+            <MetricCard
               title="Delay Delivery"
               value={12}
-              changeValue={1}
-              changeType="unstable"
-              fiscalYearValue={2}
+              trend={{ type: "unstable", value: 1 }}
+              fiscalYear={{ value: 2 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <DeliveryCard
-              key="oes-quality"
+            <MetricCard
               title="OES Delv. Quality Issues"
               value={8}
-              changeValue={2}
-              changeType="stable"
-              fiscalYearValue={1}
+              trend={{ type: "stable", value: 2 }}
+              fiscalYear={{ value: 1 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <DeliveryCard
-              key="yellow-lamp"
+            <MetricCard
               title="Yellow Lamp"
               value={15}
-              changeValue={0}
-              changeType="stable"
-              fiscalYearValue={3}
+              trend={{ type: "stable", value: 0 }}
+              fiscalYear={{ value: 3 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <DeliveryCard
-              key="red-lamp"
+            <MetricCard
               title="Red Lamp"
               value={5}
-              changeValue={1}
-              changeType="unstable"
-              fiscalYearValue={0}
+              trend={{ type: "unstable", value: 1 }}
+              fiscalYear={{ value: 0 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <DeliveryCard
-              key="part-shortage"
+            <MetricCard
               title="Part/Box Shortage"
               value={0}
-              changeValue={1}
-              changeType="stable"
-              fiscalYearValue={2}
+              trend={{ type: "stable", value: 1 }}
+              fiscalYear={{ value: 2 }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
         </div>

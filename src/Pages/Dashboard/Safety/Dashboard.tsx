@@ -1,12 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-import PlantWorkedCard from "./components/PlantWorkedCard";
+import PlantWorkedCard from "../../../Components/PlantWorkedCard";
+import DashboardCalendar, { type CalendarEvent } from "../../../Components/Calendar/DashboardCalendar";
+import MetricCard from "../../../Components/Cards/MetricCard";
 import SafetyPatrol from "./components/SafetyPatrol";
-import Calender from "./components/Calender";
 import AccidentList from "./components/AccidentList";
 import SafetyPatrolList from "./components/SafetyPatrolList";
 import Summary from "./components/Summary";
-import AccidentCard from "./components/AccidentCard";
 import AccidentChart from "./components/AccidentChart";
 import { ACCIDENT_TYPES, CHART_TYPES } from "./config/accidentTypes";
 
@@ -15,8 +15,6 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
-  // Map selectedPlants dari Navbar dropdown ke format selectedPlant untuk chart
-  // selectedPlants berisi ID: "all", "fajar", "bekasi" (bukan label!)
   const selectedPlant: 'all' | 'fajar' | 'bekasi' = 
     selectedPlants.includes('all') || selectedPlants.length === 0 
       ? 'all' 
@@ -34,7 +32,6 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
     { id: "traffic", label: "Traffic Accident", value: 2, color: "#EAB308" },
   ];
 
-  // LOGIKA BARU:
   const accidentCount = safetyData[0].value;
   let effectiveDate = new Date();
 
@@ -42,7 +39,7 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
     // KASUS 1: Ada Accident Hari Ini -> 0 Days
     effectiveDate = new Date();
   } else {
-    // KASUS 2: Tidak Ada Accident -> 1 Day (Mulai dari kemarin)
+    // KASUS 2: Tidak Ada Accident -> 1 Day
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     effectiveDate = yesterday;
@@ -55,7 +52,7 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
   const accidentDates = ["2025-12-05"];
 
   // 2. Tanggal Kuning (Subcount, Near Miss, Smoke, Fire, Traffic)
-  const warningDates = ["2025-12-12", "2025-12-18", "2025-12-25"];
+  const warningDates = ["2025-12-08", "2025-12-10", "2025-12-12"];
 
   return (
     <motion.div
@@ -78,12 +75,17 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
             <AccidentChart config={CHART_TYPES.TRAFFIC} selectedPlant={selectedPlant} />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <PlantWorkedCard lastAccidentDate={effectiveDate} />
+            <PlantWorkedCard 
+              lastAccidentDate={effectiveDate} 
+              contextText="an Accident"
+            />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <Calender
-              accidentDates={accidentDates}
-              warningDates={warningDates}
+            <DashboardCalendar
+              events={[
+                ...accidentDates.map((date): CalendarEvent => ({ date, type: 'critical' })),
+                ...warningDates.map((date): CalendarEvent => ({ date, type: 'warning' }))
+              ]}
             />
           </div>
         </div>
@@ -91,22 +93,76 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedPlants }) => {
         {/* Middle Section - Row 2 */}
         <div className="grid grid-cols-6 gap-2 min-h-0">
           <div className="col-span-1 h-full overflow-hidden">
-            <AccidentCard config={ACCIDENT_TYPES.ACCIDENT} value={safetyData[0].value} />
+            <MetricCard
+              title={ACCIDENT_TYPES.ACCIDENT.title}
+              value={safetyData[0].value}
+              trend={{
+                type: ACCIDENT_TYPES.ACCIDENT.trendType,
+                value: ACCIDENT_TYPES.ACCIDENT.trendValue
+              }}
+              fiscalYear={{ value: ACCIDENT_TYPES.ACCIDENT.fiscalYearValue }}
+              formatting={{ valueSize: 'large' }}
+            />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <AccidentCard config={ACCIDENT_TYPES.SUBCOUNT} value={safetyData[1].value} />
+            <MetricCard
+              title={ACCIDENT_TYPES.SUBCOUNT.title}
+              value={safetyData[1].value}
+              trend={{
+                type: ACCIDENT_TYPES.SUBCOUNT.trendType,
+                value: ACCIDENT_TYPES.SUBCOUNT.trendValue
+              }}
+              fiscalYear={{ value: ACCIDENT_TYPES.SUBCOUNT.fiscalYearValue }}
+              formatting={{ valueSize: 'large' }}
+            />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <AccidentCard config={ACCIDENT_TYPES.NEAR_MISS} value={safetyData[2].value} />
+            <MetricCard
+              title={ACCIDENT_TYPES.NEAR_MISS.title}
+              value={safetyData[2].value}
+              trend={{
+                type: ACCIDENT_TYPES.NEAR_MISS.trendType,
+                value: ACCIDENT_TYPES.NEAR_MISS.trendValue
+              }}
+              fiscalYear={{ value: ACCIDENT_TYPES.NEAR_MISS.fiscalYearValue }}
+              formatting={{ valueSize: 'large' }}
+            />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <AccidentCard config={ACCIDENT_TYPES.SMOKE} value={safetyData[3].value} />
+            <MetricCard
+              title={ACCIDENT_TYPES.SMOKE.title}
+              value={safetyData[3].value}
+              trend={{
+                type: ACCIDENT_TYPES.SMOKE.trendType,
+                value: ACCIDENT_TYPES.SMOKE.trendValue
+              }}
+              fiscalYear={{ value: ACCIDENT_TYPES.SMOKE.fiscalYearValue }}
+              formatting={{ valueSize: 'large' }}
+            />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <AccidentCard config={ACCIDENT_TYPES.FIRE} value={safetyData[4].value} />
+            <MetricCard
+              title={ACCIDENT_TYPES.FIRE.title}
+              value={safetyData[4].value}
+              trend={{
+                type: ACCIDENT_TYPES.FIRE.trendType,
+                value: ACCIDENT_TYPES.FIRE.trendValue
+              }}
+              fiscalYear={{ value: ACCIDENT_TYPES.FIRE.fiscalYearValue }}
+              formatting={{ valueSize: 'large' }}
+            />
           </div>
           <div className="col-span-1 h-full overflow-hidden">
-            <AccidentCard config={ACCIDENT_TYPES.TRAFFIC} value={safetyData[5].value} />
+            <MetricCard
+              title={ACCIDENT_TYPES.TRAFFIC.title}
+              value={safetyData[5].value}
+              trend={{
+                type: ACCIDENT_TYPES.TRAFFIC.trendType,
+                value: ACCIDENT_TYPES.TRAFFIC.trendValue
+              }}
+              fiscalYear={{ value: ACCIDENT_TYPES.TRAFFIC.fiscalYearValue }}
+              formatting={{ valueSize: 'large' }}
+            />
           </div>
         </div>
 

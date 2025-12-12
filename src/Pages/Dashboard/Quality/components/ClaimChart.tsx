@@ -12,9 +12,15 @@ import {
   Legend,
   type ChartData,
 } from "chart.js";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import AchievedIcon from "./../../../../Assets/Achieved.png";
-import NotAchievedIcon from "./../../../../Assets/Notachieved.png";
+import { LegendItem } from "../../../../Components/Charts/ChartLegend";
+import { ChartHeaderControls } from "../../../../Components/Charts/ChartHeader";
+import { 
+  calculateAccumulation, 
+  getVisibleDatasetsByPlants,
+  isQualityTargetAchieved,
+  FISCAL_MONTHS,
+  CHART_COLORS 
+} from "../../../../Base/Utils/chartHelpers";
 
 ChartJS.register(
   CategoryScale,
@@ -27,11 +33,6 @@ ChartJS.register(
   Legend
 );
 
-const MONTHS = [
-  "Apr", "May", "Jun", "Jul", "Aug", "Sep",
-  "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"
-];
-
 const INITIAL_DATA = {
   th: [1, 2, 1, 0, 1, 2, 1, 0, 1, 1, 0, 2],
   pt: [1, 0, 1, 2, 1, 0, 1, 1, 0, 1, 2, 1],
@@ -40,13 +41,6 @@ const INITIAL_DATA = {
 } as const;
 
 const CHART_CONFIG = {
-  colors: {
-    th: "rgba(59, 130, 246, 0.8)",
-    pt: "rgba(34, 197, 94, 0.8)",
-    elect: "rgba(168, 85, 247, 0.8)",
-    target: "rgb(239, 68, 68)",
-    accumulation: "rgb(59, 130, 246)"
-  },
   scales: {
     y: { max: 6, title: "Months" },
     y1: { max: 120, title: "Case accum" }
@@ -114,72 +108,11 @@ interface DatasetConfig {
   color: string;
 }
 
-interface LegendItemProps {
-  color: string;
-  label: string;
-  type?: "bar" | "line";
-}
-
-interface HeaderControlsProps {
-  isAchieved: boolean;
-}
-
-// Components for LegendItem icons (moved outside)
-interface IconProps {
-  color: string;
-}
-
-const LineIcon: React.FC<IconProps> = ({ color }) => (
-  <div className="flex items-center">
-    <div className="w-1.5 h-0.5" style={{ backgroundColor: color }} />
-    <div className="w-1 h-1 rounded-full" style={{ backgroundColor: color }} />
-    <div className="w-1.5 h-0.5" style={{ backgroundColor: color }} />
-  </div>
-);
-
-const BarIcon: React.FC<IconProps> = ({ color }) => (
-  <div className="w-2 h-2 rounded" style={{ backgroundColor: color }} />
-);
-
-const LegendItem: React.FC<LegendItemProps> = ({ color, label, type = "bar" }) => {
-  return (
-    <div className="flex items-center gap-1">
-      {type === "line" ? (
-        <LineIcon color={color} />
-      ) : (
-        <BarIcon color={color} />
-      )}
-      <span className="font-medium">{label}</span>
-    </div>
-  );
-};
-
-const HeaderControls: React.FC<HeaderControlsProps> = ({ isAchieved }) => (
-  <div className="flex items-center gap-1">
-    <img
-      src={isAchieved ? AchievedIcon : NotAchievedIcon}
-      alt={isAchieved ? "Achieved" : "Not Achieved"}
-      className="w-4 h-4 rounded-full border border-black"
-    />
-    <button
-      className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition"
-      aria-label="Expand chart"
-    >
-      <ChevronUp size={10} className="text-blue-700" />
-    </button>
-    <button
-      className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition"
-      aria-label="Collapse chart"
-    >
-      <ChevronDown size={10} className="text-blue-700" />
-    </button>
-  </div>
-);
 
 const BAR_DATASETS_CONFIG: DatasetConfig[] = [
-  { id: "th", label: "TH", data: [...INITIAL_DATA.th], color: CHART_CONFIG.colors.th },
-  { id: "pt", label: "PT", data: [...INITIAL_DATA.pt], color: CHART_CONFIG.colors.pt },
-  { id: "elect", label: "Elect.", data: [...INITIAL_DATA.elect], color: CHART_CONFIG.colors.elect }
+  { id: "th", label: "TH", data: [...INITIAL_DATA.th], color: CHART_COLORS.th },
+  { id: "pt", label: "PT", data: [...INITIAL_DATA.pt], color: CHART_COLORS.pt },
+  { id: "elect", label: "Elect.", data: [...INITIAL_DATA.elect], color: CHART_COLORS.elect }
 ];
 
 const SafetyAccidentCard: React.FC<ClaimChartProps> = ({ 
@@ -189,40 +122,26 @@ const SafetyAccidentCard: React.FC<ClaimChartProps> = ({
 }) => {
   const chartDataSource = dataOverride || INITIAL_DATA;
 
-  const { showTH, showPT, showElect } = useMemo(() => {
-    const isAllSelected = selectedPlants.includes("all");
-    const isFajarSelected = selectedPlants.includes("fajar");
-    const isBekasiSelected = selectedPlants.includes("bekasi");
-
-    return {
-      showTH: isAllSelected || isBekasiSelected || (isFajarSelected && isBekasiSelected),
-      showPT: isAllSelected || isFajarSelected || (isFajarSelected && isBekasiSelected),
-      showElect: isAllSelected || isFajarSelected || (isFajarSelected && isBekasiSelected)
-    };
-  }, [selectedPlants]);
+  const { showTH, showPT, showElect } = useMemo(() => 
+    getVisibleDatasetsByPlants(selectedPlants), 
+    [selectedPlants]
+  );
 
   const accumulatedData = useMemo(() => {
-    const result: number[] = [];
-    let runningTotal = 0;
-
-    MONTHS.forEach((_, index) => {
+    const monthlyTotals = FISCAL_MONTHS.map((_, index) => {
       let monthTotal = 0;
       if (showTH) monthTotal += chartDataSource.th[index];
       if (showPT) monthTotal += chartDataSource.pt[index];
       if (showElect) monthTotal += chartDataSource.elect[index];
-      
-      runningTotal += monthTotal;
-      result.push(runningTotal);
+      return monthTotal;
     });
-
-    return result;
+    return calculateAccumulation(monthlyTotals);
   }, [showTH, showPT, showElect, chartDataSource]);
 
-  const isAchieved = useMemo(() => {
-    const totalAccumulation = accumulatedData[accumulatedData.length - 1] || 0;
-    const totalTarget = chartDataSource.target.reduce((sum, value) => sum + value, 0);
-    return totalAccumulation <= totalTarget;
-  }, [accumulatedData, chartDataSource]);
+  const isAchieved = useMemo(() => 
+    isQualityTargetAchieved(accumulatedData, chartDataSource.target),
+    [accumulatedData, chartDataSource]
+  );
 
   const chartData: ChartData<"line" | "bar", number[], string> = useMemo(() => {
     const datasets = [];
@@ -247,8 +166,8 @@ const SafetyAccidentCard: React.FC<ClaimChartProps> = ({
         type: "line" as const,
         label: "Target",
         data: [...chartDataSource.target],
-        borderColor: CHART_CONFIG.colors.target,
-        backgroundColor: `${CHART_CONFIG.colors.target}1a`,
+        borderColor: CHART_COLORS.target,
+        backgroundColor: `${CHART_COLORS.target}1a`,
         borderWidth: 2,
         pointRadius: 0,
         yAxisID: "y1"
@@ -257,17 +176,17 @@ const SafetyAccidentCard: React.FC<ClaimChartProps> = ({
         type: "line" as const,
         label: "Acumulation",
         data: accumulatedData,
-        borderColor: CHART_CONFIG.colors.accumulation,
-        backgroundColor: `${CHART_CONFIG.colors.accumulation}1a`,
+        borderColor: CHART_COLORS.accumulation,
+        backgroundColor: `${CHART_COLORS.accumulation}1a`,
         borderWidth: 2,
         pointRadius: 4,
-        pointBackgroundColor: CHART_CONFIG.colors.accumulation,
+        pointBackgroundColor: CHART_COLORS.accumulation,
         yAxisID: "y1"
       }
     );
 
     return {
-      labels: [...MONTHS],
+      labels: [...FISCAL_MONTHS],
       datasets
     };
   }, [showTH, showPT, showElect, accumulatedData, chartDataSource]);
@@ -276,7 +195,7 @@ const SafetyAccidentCard: React.FC<ClaimChartProps> = ({
     <div className="bg-white rounded-lg shadow-md p-2 h-full flex flex-col w-full">
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-sm font-bold text-gray-800">{title}</h2>
-        <HeaderControls isAchieved={isAchieved} />
+        <ChartHeaderControls isAchieved={isAchieved} />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-1 text-[10px]">

@@ -12,6 +12,14 @@ import {
   Legend,
 } from "chart.js";
 import { X, ChevronUp, ChevronDown } from "lucide-react";
+import { LegendItem } from "../../../../Components/Charts/ChartLegend";
+import { 
+  calculateAccumulationByPlant, 
+  getVisibleDatasetsByPlant, 
+  FISCAL_MONTHS,
+  CHART_COLORS,
+  type PlantSelection 
+} from "../../../../Base/Utils/chartHelpers";
 import type { ChartConfig } from "../config/accidentTypes";
 
 ChartJS.register(
@@ -31,122 +39,69 @@ interface AccidentChartProps {
 }
 
 const AccidentChart: React.FC<AccidentChartProps> = ({ config, selectedPlant }) => {
-  const months = [
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-    "Jan",
-    "Feb",
-    "Mar",
-  ];
-
   const { title, thData, ptData, electData, targetData } = config;
 
-  // Filter datasets based on selected plant
+  // Determine which datasets to show based on plant selection
+  const { showTH, showPT, showElect } = getVisibleDatasetsByPlant(selectedPlant as PlantSelection);
+
+  // Build visible datasets
   const getVisibleDatasets = () => {
-    if (selectedPlant === 'bekasi') {
-      // Bekasi Plant = TH only
-      return [
-        {
-          type: "bar" as const,
-          label: "TH",
-          data: thData,
-          backgroundColor: "rgba(59, 130, 246, 0.8)",
-          stack: "stack1",
-          yAxisID: "y",
-        }
-      ];
-    } else if (selectedPlant === 'fajar') {
-      // Fajar Plant = PT + Elect only
-      return [
-        {
-          type: "bar" as const,
-          label: "PT",
-          data: ptData,
-          backgroundColor: "rgba(34, 197, 94, 0.8)",
-          stack: "stack1",
-          yAxisID: "y",
-        },
-        {
-          type: "bar" as const,
-          label: "Elect.",
-          data: electData,
-          backgroundColor: "rgba(168, 85, 247, 0.8)",
-          stack: "stack1",
-          yAxisID: "y",
-        }
-      ];
-    } else {
-      // All Plants = TH + PT + Elect
-      return [
-        {
-          type: "bar" as const,
-          label: "TH",
-          data: thData,
-          backgroundColor: "rgba(59, 130, 246, 0.8)",
-          stack: "stack1",
-          yAxisID: "y",
-        },
-        {
-          type: "bar" as const,
-          label: "PT",
-          data: ptData,
-          backgroundColor: "rgba(34, 197, 94, 0.8)",
-          stack: "stack1",
-          yAxisID: "y",
-        },
-        {
-          type: "bar" as const,
-          label: "Elect.",
-          data: electData,
-          backgroundColor: "rgba(168, 85, 247, 0.8)",
-          stack: "stack1",
-          yAxisID: "y",
-        }
-      ];
+    const datasets = [];
+    
+    if (showTH) {
+      datasets.push({
+        type: "bar" as const,
+        label: "TH",
+        data: thData,
+        backgroundColor: CHART_COLORS.th,
+        stack: "stack1",
+        yAxisID: "y",
+      });
     }
+    
+    if (showPT) {
+      datasets.push({
+        type: "bar" as const,
+        label: "PT",
+        data: ptData,
+        backgroundColor: CHART_COLORS.pt,
+        stack: "stack1",
+        yAxisID: "y",
+      });
+    }
+    
+    if (showElect) {
+      datasets.push({
+        type: "bar" as const,
+        label: "Elect.",
+        data: electData,
+        backgroundColor: CHART_COLORS.elect,
+        stack: "stack1",
+        yAxisID: "y",
+      });
+    }
+    
+    return datasets;
   };
 
-  // HITUNG ACCUMULATION (kumulatif naik terus, tidak boleh turun) based on filtered data
-  const accumulationData: number[] = [];
-  months.forEach((_, index) => {
-    let currentMonthTotal = 0;
-    
-    // Calculate total based on selected plant
-    if (selectedPlant === 'bekasi') {
-      currentMonthTotal = thData[index];
-    } else if (selectedPlant === 'fajar') {
-      currentMonthTotal = ptData[index] + electData[index];
-    } else {
-      currentMonthTotal = ptData[index] + thData[index] + electData[index];
-    }
-    
-    // Accumulation = total bulan sebelumnya + total bulan ini
-    if (index === 0) {
-      accumulationData.push(currentMonthTotal); // Bulan pertama
-    } else {
-      accumulationData.push(accumulationData[index - 1] + currentMonthTotal); // Kumulatif
-    }
-  });
+  // Calculate accumulation based on plant selection using utility
+  const accumulationData = calculateAccumulationByPlant(
+    { th: thData, pt: ptData, elect: electData },
+    selectedPlant as PlantSelection
+  );
 
   const visibleDatasets = getVisibleDatasets();
 
   const chartData = {
-    labels: months,
+    labels: [...FISCAL_MONTHS],
     datasets: [
       ...visibleDatasets,
       {
         type: "line" as const,
         label: "Target",
         data: targetData,
-        borderColor: "rgb(239, 68, 68)",
-        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        borderColor: CHART_COLORS.target,
+        backgroundColor: `${CHART_COLORS.target}1a`,
         borderWidth: 2,
         pointRadius: 0,
         yAxisID: "y1",
@@ -155,11 +110,11 @@ const AccidentChart: React.FC<AccidentChartProps> = ({ config, selectedPlant }) 
         type: "line" as const,
         label: "Accumulation",
         data: accumulationData,
-        borderColor: "rgb(59, 130, 246)",
-        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        borderColor: CHART_COLORS.accumulation,
+        backgroundColor: `${CHART_COLORS.accumulation}1a`,
         borderWidth: 2,
         pointRadius: 4,
-        pointBackgroundColor: "rgb(59, 130, 246)",
+        pointBackgroundColor: CHART_COLORS.accumulation,
         yAxisID: "y1",
       },
     ],
@@ -230,47 +185,11 @@ const AccidentChart: React.FC<AccidentChartProps> = ({ config, selectedPlant }) 
       </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-1 text-[10px]">
-        {/* Show TH only for All or Bekasi */}
-        {(selectedPlant === 'all' || selectedPlant === 'bekasi') && (
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-blue-500 rounded"></div>
-            <span className="font-medium">TH</span>
-          </div>
-        )}
-        
-        {/* Show PT only for All or Fajar */}
-        {(selectedPlant === 'all' || selectedPlant === 'fajar') && (
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-green-500 rounded"></div>
-            <span className="font-medium">PT</span>
-          </div>
-        )}
-        
-        {/* Show Elect only for All or Fajar */}
-        {(selectedPlant === 'all' || selectedPlant === 'fajar') && (
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-purple-500 rounded"></div>
-            <span className="font-medium">Elect.</span>
-          </div>
-        )}
-        
-        {/* Target & Accumulation always visible */}
-        <div className="flex items-center gap-1">
-          <div className="flex items-center">
-            <div className="w-1.5 h-0.5 bg-red-500"></div>
-            <div className="w-1 h-1 bg-red-500 rounded-full"></div>
-            <div className="w-1.5 h-0.5 bg-red-500"></div>
-          </div>
-          <span className="font-medium">Target</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="flex items-center">
-            <div className="w-1.5 h-0.5 bg-blue-500"></div>
-            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-            <div className="w-1.5 h-0.5 bg-blue-500"></div>
-          </div>
-          <span className="font-medium">Accumulation</span>
-        </div>
+        {showTH && <LegendItem color="#3b82f6" label="TH" />}
+        {showPT && <LegendItem color="#22c55e" label="PT" />}
+        {showElect && <LegendItem color="#a855f7" label="Elect." />}
+        <LegendItem color="#ef4444" label="Target" type="line" />
+        <LegendItem color="#3b82f6" label="Accumulation" type="line" />
       </div>
 
       <div className="flex-1 min-h-0">
