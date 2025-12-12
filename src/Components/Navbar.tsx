@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 import header from "./../assets/Header.png";
 import backgroundImage from "./../assets/Background.png";
 import { DropdownCompanies } from "./Dropdowns/DropdownCompanies";
@@ -27,9 +27,24 @@ interface NavbarProps {
   onTabChange: (tab: string) => void;
   selectedPlants: string[];
   onPlantsChange: (plants: string[]) => void;
+  showFilters?: boolean;
+  showLogout?: boolean;
+  onLogout?: () => void;
+  showBackToLanding?: boolean;
+  onBackToLanding?: () => void;
 }
 
-export const Navbar = ({ activeTab, onTabChange, selectedPlants, onPlantsChange }: NavbarProps) => {
+export const Navbar = ({ 
+  activeTab, 
+  onTabChange, 
+  selectedPlants, 
+  onPlantsChange,
+  showFilters = true,
+  showLogout = false,
+  onLogout,
+  showBackToLanding = false,
+  onBackToLanding
+}: NavbarProps) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>(["all"]);
@@ -89,61 +104,88 @@ export const Navbar = ({ activeTab, onTabChange, selectedPlants, onPlantsChange 
 
         {/* Dropdown Filters */}
         <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
-          {/* Company Dropdown */}
-          <div className="relative">
-            <DropdownButton label="COMPANY" onClick={() => toggleDropdown("company")} />
-            {openDropdown === "company" && (
-              <div className="absolute top-full mt-2 left-0 z-50">
-                <DropdownCompanies
-                  selectedCompanies={selectedCompanies}
-                  onSelectionChange={setSelectedCompanies}
-                  onApply={closeDropdown}
-                />
+          {showFilters && (
+            <>
+              {/* Company Dropdown */}
+              <div className="relative">
+                <DropdownButton label="COMPANY" onClick={() => toggleDropdown("company")} />
+                {openDropdown === "company" && (
+                  <div className="absolute top-full mt-2 left-0 z-50">
+                    <DropdownCompanies
+                      selectedCompanies={selectedCompanies}
+                      onSelectionChange={setSelectedCompanies}
+                      onApply={closeDropdown}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Plant Dropdown */}
-          <div className="relative">
-            <DropdownButton label="PLANT" onClick={() => toggleDropdown("plant")} />
-            {openDropdown === "plant" && (
-              <div className="absolute top-full mt-2 left-0 z-50">
-                <DropdownPlant
-                  selectedPlants={selectedPlants}
-                  onSelectionChange={onPlantsChange}
-                  onApply={closeDropdown}
-                />
+              {/* Plant Dropdown */}
+              <div className="relative">
+                <DropdownButton label="PLANT" onClick={() => toggleDropdown("plant")} />
+                {openDropdown === "plant" && (
+                  <div className="absolute top-full mt-2 left-0 z-50">
+                    <DropdownPlant
+                      selectedPlants={selectedPlants}
+                      onSelectionChange={onPlantsChange}
+                      onApply={closeDropdown}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Type Dropdown */}
-          <div className="relative">
-            <DropdownButton label="TYPE" onClick={() => toggleDropdown("type")} />
-            {openDropdown === "type" && (
-              <div className="absolute top-full mt-2 left-0 z-50">
-                <DropdownType
-                  selectedTypes={selectedTypes}
-                  onSelectionChange={setSelectedTypes}
-                  onApply={closeDropdown}
-                />
+              {/* Type Dropdown */}
+              <div className="relative">
+                <DropdownButton label="TYPE" onClick={() => toggleDropdown("type")} />
+                {openDropdown === "type" && (
+                  <div className="absolute top-full mt-2 left-0 z-50">
+                    <DropdownType
+                      selectedTypes={selectedTypes}
+                      onSelectionChange={setSelectedTypes}
+                      onApply={closeDropdown}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Period Dropdown */}
-          <div className="relative">
-            <DropdownButton label="PERIOD" onClick={() => toggleDropdown("period")} />
-            {openDropdown === "period" && (
-              <div className="absolute top-full mt-2 right-0 z-50">
-                <DropdownPeriod
-                  selectedPeriods={selectedPeriods}
-                  onSelectionChange={setSelectedPeriods}
-                  onApply={closeDropdown}
-                />
+              {/* Period Dropdown */}
+              <div className="relative">
+                <DropdownButton label="PERIOD" onClick={() => toggleDropdown("period")} />
+                {openDropdown === "period" && (
+                  <div className="absolute top-full mt-2 right-0 z-50">
+                    <DropdownPeriod
+                      selectedPeriods={selectedPeriods}
+                      onSelectionChange={setSelectedPeriods}
+                      onApply={closeDropdown}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
+          
+          {/* Logout Button */}
+          {showLogout && onLogout && (
+            <button
+              onClick={onLogout}
+              className="min-w-[100px] sm:min-w-[120px] h-[36px] sm:h-[40px] px-2 sm:px-3 bg-red-500 hover:bg-red-600 rounded-xl flex items-center justify-center gap-2 transition-colors"
+              aria-label="Logout"
+            >
+              <LogOut className="w-4 h-4 text-white" />
+              <span className="font-semibold text-white text-xs sm:text-sm">Logout</span>
+            </button>
+          )}
+          
+          {/* Back to Landing Page Button */}
+          {showBackToLanding && onBackToLanding && (
+            <button
+              onClick={onBackToLanding}
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-[#81a1c1] hover:bg-[#81a1c1]/80 transition-colors font-semibold text-white text-xs sm:text-sm whitespace-nowrap"
+              aria-label="Back to Landing Page"
+            >
+              Landing Page
+            </button>
+          )}
         </div>
       </div>
     </nav>
