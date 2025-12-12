@@ -47,6 +47,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, onRemove }
           
           {/* Remove Button */}
           <button
+            type="button"
             onClick={handleRemove}
             className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition shadow-lg"
             aria-label="Remove image"
@@ -59,6 +60,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, onRemove }
         {images.length > 1 && (
           <>
             <button
+              type="button"
               onClick={handlePrevious}
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition"
               aria-label="Previous image"
@@ -66,6 +68,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, onRemove }
               <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
             <button
+              type="button"
               onClick={handleNext}
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition"
               aria-label="Next image"

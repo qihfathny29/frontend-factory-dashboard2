@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { ConfirmationModal } from "../../../Components/ConfirmationModal";
 import { ImageCarousel } from "../../../Components/ImageCarousel";
 
 interface ImageFile {
@@ -32,10 +31,23 @@ interface AccidentReportData {
   permanent_action: string;
 }
 
+const DROPDOWN_OPTIONS = {
+  businessUnits: ["Thermal", "Power Train", "Electronic"] as const,
+  accidentCategories: [
+    "Accident",
+    "Accident Subcount",
+    "Near Miss",
+    "Smoke",
+    "Fire Accident",
+    "Traffic Accident",
+  ] as const,
+  companyCodes: ["DNIA", "DMIA", "HD", "TACI"] as const,
+  plantCodes: ["Bekasi Plant", "Fajar Plant", "Plant 1", "Plant 2"] as const,
+};
+
 export const SafetyForm: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"target" | "accident">("target");
-  const [showClearModal, setShowClearModal] = useState(false);
-  
+
   // Target Form State
   const [targetForm, setTargetForm] = useState<TargetFormData>({
     period_month: "",
@@ -64,27 +76,13 @@ export const SafetyForm: React.FC = () => {
   // Image Upload State
   const [uploadedImages, setUploadedImages] = useState<ImageFile[]>([]);
 
-  // Dropdown Options
-  const businessUnits = ["Thermal", "Power Train", "Electronic"];
-  const accidentCategories = [
-    "Accident",
-    "Accident Subcount",
-    "Near Miss",
-    "Smoke",
-    "Fire Accident",
-    "Traffic Accident",
-  ];
-  const companyCodes = ["DNIA", "DMIA", "HD", "TACI"];
-  const plantCodes = ["Bekasi Plant", "Fajar Plant", "Plant 1", "Plant 2"];
-
-  // Handle Target Form Change
-  const handleTargetChange = (field: keyof TargetFormData, value: string) => {
-    setTargetForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Handle Accident Form Change
-  const handleAccidentChange = (field: keyof AccidentReportData, value: string) => {
-    setAccidentForm((prev) => ({ ...prev, [field]: value }));
+  // Generic Change Handler
+  const handleChange = <T extends object>(
+    setter: React.Dispatch<React.SetStateAction<T>>,
+    field: keyof T,
+    value: string
+  ) => {
+    setter((prev) => ({ ...prev, [field]: value }));
   };
 
   // Handle Image Upload
@@ -93,10 +91,17 @@ export const SafetyForm: React.FC = () => {
     if (!files) return;
 
     const fileArray = Array.from(files);
+    processImageFiles(fileArray);
+    // Reset input value to allow re-uploading same file if needed
+    e.target.value = "";
+  };
 
-    // Validation: Max 3 images
-    if (uploadedImages.length + fileArray.length > 3) {
-      toast.error("Maximum 3 images allowed!");
+  // Process Image Files
+  const processImageFiles = (fileArray: File[]) => {
+
+    // Validation: Max 5 images
+    if (uploadedImages.length + fileArray.length > 5) {
+      toast.error("Maximum 5 images allowed!");
       return;
     }
 
@@ -116,9 +121,14 @@ export const SafetyForm: React.FC = () => {
       }
 
       // Generate timestamp for unique naming
-      const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
+      const timestamp = new Date()
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .split(".")[0];
       const index = uploadedImages.length + validFiles.length + 1;
-      const newFileName = `accident_report_${timestamp}_image${index}.${file.name.split(".").pop()}`;
+      const newFileName = `accident_report_${timestamp}_image${index}.${file.name
+        .split(".")
+        .pop()}`;
 
       validFiles.push({
         file: file,
@@ -128,7 +138,31 @@ export const SafetyForm: React.FC = () => {
     }
 
     setUploadedImages((prev) => [...prev, ...validFiles]);
-    toast.success(`${validFiles.length} image(s) uploaded successfully!`);
+    if (validFiles.length > 0) {
+      toast.success(`${validFiles.length} image(s) uploaded successfully!`);
+    }
+  };
+
+  // Handle Drag and Drop
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      processImageFiles(fileArray);
+    }
+  };
+
+  // Handle Click to Open File Dialog
+  const handleUploadClick = () => {
+    document.getElementById("file-upload")?.click();
   };
 
   // Remove Image from Carousel
@@ -242,88 +276,76 @@ export const SafetyForm: React.FC = () => {
     return true;
   };
 
+  // Reset All Forms
+  const resetForms = () => {
+    setTargetForm({
+      period_month: "",
+      bu: "",
+      accident_category: "",
+      target_value: "",
+    });
+    setAccidentForm({
+      accident_date: "",
+      company_code: "",
+      plant_code: "",
+      bu: "",
+      accident_name: "",
+      place: "",
+      accident_category: "",
+      injured_person: "",
+      damage: "",
+      circumstance: "",
+      fact_finding: "",
+      temporary_action: "",
+      permanent_action: "",
+    });
+    uploadedImages.forEach((img) => URL.revokeObjectURL(img.preview));
+    setUploadedImages([]);
+  };
+
   // Handle Submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    let isValid = false;
+
     if (activeTab === "target") {
-      if (!validateTargetForm()) return;
+      isValid = validateTargetForm();
+      if (isValid) {
+        // Log form data
+        console.log("=== TARGET TRAFFIC ACCIDENT SUBMISSION ===");
+        console.log("Form Data:", targetForm);
+        console.log("========================================");
 
-      // Log form data
-      console.log("=== TARGET TRAFFIC ACCIDENT SUBMISSION ===");
-      console.log("Form Data:", targetForm);
-      console.log("========================================");
-
-      toast.success("Target Traffic Accident submitted successfully!");
-      
-      // Clear form after successful submission
-      setTargetForm({
-        period_month: "",
-        bu: "",
-        accident_category: "",
-        target_value: "",
-      });
+        toast.success("Target Traffic Accident submitted successfully!");
+      }
     } else {
-      if (!validateAccidentReport()) return;
+      isValid = validateAccidentReport();
+      if (isValid) {
+        console.log("=== ACCIDENT REPORT SUBMISSION ===");
+        console.log("Form Data:", accidentForm);
+        console.log(
+          "Uploaded Images:",
+          uploadedImages.map((img) => img.name)
+        );
+        console.log("==================================");
 
-      console.log("=== ACCIDENT REPORT SUBMISSION ===");
-      console.log("Form Data:", accidentForm);
-      console.log("Uploaded Images:", uploadedImages.map((img) => img.name));
-      console.log("==================================");
+        toast.success("Accident Report submitted successfully!");
+      }
+    }
 
-      toast.success("Accident Report submitted successfully!");
-      
-      // Clear form after successful submission
-      setAccidentForm({
-        accident_date: "",
-        company_code: "",
-        plant_code: "",
-        bu: "",
-        accident_name: "",
-        place: "",
-        accident_category: "",
-        injured_person: "",
-        damage: "",
-        circumstance: "",
-        fact_finding: "",
-        temporary_action: "",
-        permanent_action: "",
-      });
-
-      // Clear uploaded images
-      uploadedImages.forEach((img) => URL.revokeObjectURL(img.preview));
-      setUploadedImages([]);
+    if (isValid) {
+      resetForms();
     }
   };
 
   // Handle Clear Form
   const handleClearForm = () => {
-    if (activeTab === "target") {
-      setTargetForm({
-        period_month: "",
-        bu: "",
-        accident_category: "",
-        target_value: "",
-      });
-    } else {
-      setAccidentForm({
-        accident_date: "",
-        company_code: "",
-        plant_code: "",
-        bu: "",
-        accident_name: "",
-        place: "",
-        accident_category: "",
-        injured_person: "",
-        damage: "",
-        circumstance: "",
-        fact_finding: "",
-        temporary_action: "",
-        permanent_action: "",
-      });
-      uploadedImages.forEach((img) => URL.revokeObjectURL(img.preview));
-      setUploadedImages([]);
+    if (!window.confirm("Are you sure you want to clear all form data? This action cannot be undone.")) {
+      return;
     }
+
+    resetForms();
     toast.success("Form cleared successfully!");
   };
 
@@ -381,7 +403,9 @@ export const SafetyForm: React.FC = () => {
                     <input
                       type="month"
                       value={targetForm.period_month}
-                      onChange={(e) => handleTargetChange("period_month", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setTargetForm, "period_month", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -393,11 +417,11 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <select
                       value={targetForm.bu}
-                      onChange={(e) => handleTargetChange("bu", e.target.value)}
+                      onChange={(e) => handleChange(setTargetForm, "bu", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select Business Unit</option>
-                      {businessUnits.map((bu) => (
+                      {DROPDOWN_OPTIONS.businessUnits.map((bu) => (
                         <option key={bu} value={bu}>
                           {bu}
                         </option>
@@ -412,11 +436,13 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <select
                       value={targetForm.accident_category}
-                      onChange={(e) => handleTargetChange("accident_category", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setTargetForm, "accident_category", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select Accident Category</option>
-                      {accidentCategories.map((cat) => (
+                      {DROPDOWN_OPTIONS.accidentCategories.map((cat) => (
                         <option key={cat} value={cat}>
                           {cat}
                         </option>
@@ -432,7 +458,9 @@ export const SafetyForm: React.FC = () => {
                     <input
                       type="text"
                       value={targetForm.target_value}
-                      onChange={(e) => handleTargetChange("target_value", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setTargetForm, "target_value", e.target.value)
+                      }
                       placeholder="Enter target value"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -445,12 +473,15 @@ export const SafetyForm: React.FC = () => {
                     {/* Accident Date & Time */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Accident Date & Time <span className="text-red-500">*</span>
+                        Accident Date & Time{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="datetime-local"
                         value={accidentForm.accident_date}
-                        onChange={(e) => handleAccidentChange("accident_date", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "accident_date", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -462,11 +493,13 @@ export const SafetyForm: React.FC = () => {
                       </label>
                       <select
                         value={accidentForm.company_code}
-                        onChange={(e) => handleAccidentChange("company_code", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "company_code", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Company Code</option>
-                        {companyCodes.map((code) => (
+                        {DROPDOWN_OPTIONS.companyCodes.map((code) => (
                           <option key={code} value={code}>
                             {code}
                           </option>
@@ -481,11 +514,13 @@ export const SafetyForm: React.FC = () => {
                       </label>
                       <select
                         value={accidentForm.plant_code}
-                        onChange={(e) => handleAccidentChange("plant_code", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "plant_code", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Plant Code</option>
-                        {plantCodes.map((plant) => (
+                        {DROPDOWN_OPTIONS.plantCodes.map((plant) => (
                           <option key={plant} value={plant}>
                             {plant}
                           </option>
@@ -500,11 +535,13 @@ export const SafetyForm: React.FC = () => {
                       </label>
                       <select
                         value={accidentForm.bu}
-                        onChange={(e) => handleAccidentChange("bu", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "bu", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Business Unit</option>
-                        {businessUnits.map((bu) => (
+                        {DROPDOWN_OPTIONS.businessUnits.map((bu) => (
                           <option key={bu} value={bu}>
                             {bu}
                           </option>
@@ -520,7 +557,9 @@ export const SafetyForm: React.FC = () => {
                       <input
                         type="text"
                         value={accidentForm.accident_name}
-                        onChange={(e) => handleAccidentChange("accident_name", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "accident_name", e.target.value)
+                        }
                         placeholder="Enter accident name"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -534,7 +573,9 @@ export const SafetyForm: React.FC = () => {
                       <input
                         type="text"
                         value={accidentForm.place}
-                        onChange={(e) => handleAccidentChange("place", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "place", e.target.value)
+                        }
                         placeholder="Enter location or place"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -547,11 +588,17 @@ export const SafetyForm: React.FC = () => {
                       </label>
                       <select
                         value={accidentForm.accident_category}
-                        onChange={(e) => handleAccidentChange("accident_category", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(
+                            setAccidentForm,
+                            "accident_category",
+                            e.target.value
+                          )
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Accident Category</option>
-                        {accidentCategories.map((cat) => (
+                        {DROPDOWN_OPTIONS.accidentCategories.map((cat) => (
                           <option key={cat} value={cat}>
                             {cat}
                           </option>
@@ -562,13 +609,16 @@ export const SafetyForm: React.FC = () => {
                     {/* Number of Injured Persons */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Number of Injured Persons <span className="text-red-500">*</span>
+                        Number of Injured Persons{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"
                         min="0"
                         value={accidentForm.injured_person}
-                        onChange={(e) => handleAccidentChange("injured_person", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(setAccidentForm, "injured_person", e.target.value)
+                        }
                         placeholder="Enter number"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -582,7 +632,9 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <textarea
                       value={accidentForm.damage}
-                      onChange={(e) => handleAccidentChange("damage", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setAccidentForm, "damage", e.target.value)
+                      }
                       placeholder="Enter damage description"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -596,7 +648,9 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <textarea
                       value={accidentForm.circumstance}
-                      onChange={(e) => handleAccidentChange("circumstance", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setAccidentForm, "circumstance", e.target.value)
+                      }
                       placeholder="Enter circumstance"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -610,7 +664,9 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <textarea
                       value={accidentForm.fact_finding}
-                      onChange={(e) => handleAccidentChange("fact_finding", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setAccidentForm, "fact_finding", e.target.value)
+                      }
                       placeholder="Enter fact finding"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -624,7 +680,9 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <textarea
                       value={accidentForm.temporary_action}
-                      onChange={(e) => handleAccidentChange("temporary_action", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setAccidentForm, "temporary_action", e.target.value)
+                      }
                       placeholder="Enter temporary action"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -638,37 +696,74 @@ export const SafetyForm: React.FC = () => {
                     </label>
                     <textarea
                       value={accidentForm.permanent_action}
-                      onChange={(e) => handleAccidentChange("permanent_action", e.target.value)}
+                      onChange={(e) =>
+                        handleChange(setAccidentForm, "permanent_action", e.target.value)
+                      }
                       placeholder="Enter permanent action"
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     />
                   </div>
 
-                  {/* Upload Images */}
+                  {/* MODERN UPLOAD IMAGES SECTION */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Upload Images (Optional)
+                      Upload Images
                     </label>
+                    <div 
+                      onClick={handleUploadClick}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors cursor-pointer group bg-gray-50"
+                    >
+                      <div className="space-y-1 text-center w-full">
+                        {/* Cloud Icon */}
+                        <svg
+                          className="mx-auto h-12 w-12 text-gray-400 group-hover:text-blue-500 transition-colors"
+                          stroke="currentColor"
+                          fill="none"
+                          viewBox="0 0 48 48"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        
+                        <div className="flex text-sm text-gray-600 justify-center items-center">
+                          <span className="font-medium text-blue-600">Click to upload</span>
+                          <p className="pl-1">or drag and drop</p>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          JPG, JPEG, PNG up to 2MB (Max 5 images)
+                        </p>
+                      </div>
+                    </div>
+                    {/* Hidden File Input */}
                     <input
+                      id="file-upload"
+                      name="file-upload"
                       type="file"
                       accept="image/jpeg,image/jpg,image/png"
                       multiple
+                      className="hidden"
                       onChange={handleImageUpload}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Max 10 images, 5MB each. Supported formats: JPG, JPEG, PNG
-                    </p>
                   </div>
 
                   {/* Image Carousel Preview */}
                   {uploadedImages.length > 0 && (
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Image Preview ({uploadedImages.length}/10)
+                        Image Preview ({uploadedImages.length}/3)
                       </label>
-                      <ImageCarousel images={uploadedImages} onRemove={handleRemoveImage} />
+                      <ImageCarousel
+                        images={uploadedImages}
+                        onRemove={handleRemoveImage}
+                      />
                     </div>
                   )}
                 </>
@@ -678,7 +773,7 @@ export const SafetyForm: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
                 <button
                   type="button"
-                  onClick={() => setShowClearModal(true)}
+                  onClick={handleClearForm}
                   className="flex-1 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg transition text-sm"
                 >
                   Clear Form
@@ -694,18 +789,6 @@ export const SafetyForm: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Clear Form Confirmation Modal */}
-      <ConfirmationModal
-        isOpen={showClearModal}
-        onClose={() => setShowClearModal(false)}
-        onConfirm={handleClearForm}
-        title="Clear Form"
-        message="Are you sure you want to clear all form data? This action cannot be undone."
-        confirmText="Clear"
-        cancelText="Cancel"
-        confirmColor="bg-red-600 hover:bg-red-700"
-      />
     </div>
   );
 };
