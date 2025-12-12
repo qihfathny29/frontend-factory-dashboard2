@@ -4,13 +4,12 @@ import NGByProduct from "./components/NGByProduct";
 import LossTimeBreakdown from "./components/LossTimeBreakdown";
 import PieChartCard from "./components/PieChartCard";
 import ShiftComparisonCard from "./components/ShiftComparisonCard";
-import TrendComparisonCard from "./components/TrendComparisonCard";
+import MetricCard from "../../../Components/Cards/MetricCard";
 import KaizenTable, { type KaizenData } from "./components/KaizenTable";
 import KPSProgressCard from "./components/KPSProgressCard";
 import {
   PIE_CHART_TYPES,
   SHIFT_COMPARISON_TYPES,
-  TREND_COMPARISON_TYPES,
   KAIZEN_TABLE_TYPES,
   KPS_PROGRESS_TYPES,
 } from "./config/componentTypes";
@@ -154,28 +153,31 @@ const DashboardMfg: React.FC = () => {
               nightShift={4.4}
             />
           </div>
-          <div className="col-span-1 bg-white rounded-lg shadow p-2 flex items-center justify-center">
-            <TrendComparisonCard
-              config={TREND_COMPARISON_TYPES.LOSS_TIME}
-              current={4}
-              change={1}
-              yesterday={3}
+          <div className="col-span-1 h-full overflow-hidden">
+            <MetricCard
+              title="Loss Time (hr)"
+              value={4}
+              trend={{ type: "unstable", value: 1 }}
+              fiscalYear={{ value: 3, label: "Yesterday" }}
+              formatting={{ valueSize: 'large' }}
             />
           </div>
-          <div className="col-span-1 bg-white rounded-lg shadow p-2 flex items-center justify-center">
-            <TrendComparisonCard
-              config={TREND_COMPARISON_TYPES.NG_SCRAP}
-              current={1.8}
-              change={-0.2}
-              yesterday={2.0}
+          <div className="col-span-1 h-full overflow-hidden">
+            <MetricCard
+              title="NG Scrap Ratio"
+              value={1.8}
+              trend={{ type: "decrease", value: 0.2 }}
+              fiscalYear={{ value: 2.0, label: "Yesterday" }}
+              formatting={{ valueSize: 'large', suffix: '%' }}
             />
           </div>
-          <div className="col-span-1 bg-white rounded-lg shadow p-2 flex items-center justify-center">
-            <TrendComparisonCard
-              config={TREND_COMPARISON_TYPES.NG_REWORK}
-              current={2.5}
-              change={0.3}
-              yesterday={2.2}
+          <div className="col-span-1 h-full overflow-hidden">
+            <MetricCard
+              title="NG Rework Ratio"
+              value={2.5}
+              trend={{ type: "increase", value: 0.3 }}
+              fiscalYear={{ value: 2.2, label: "Yesterday" }}
+              formatting={{ valueSize: 'large', suffix: '%' }}
             />
           </div>
         </div>

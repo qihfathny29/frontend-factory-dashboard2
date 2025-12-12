@@ -40,32 +40,7 @@ export const SHIFT_COMPARISON_TYPES: Record<string, ShiftComparisonConfig> = {
   },
 };
 
-// 3. TREND COMPARISON CARD CONFIG
-export interface TrendComparisonConfig {
-  title: string;
-  suffix: string; // "", "%", "hr", etc
-  trendLogic: "inverse" | "normal"; // inverse: naik = bad (red), turun = good (green) | normal: naik = good, turun = bad
-}
-
-export const TREND_COMPARISON_TYPES: Record<string, TrendComparisonConfig> = {
-  LOSS_TIME: {
-    title: "Loss Time (hr)",
-    suffix: "",
-    trendLogic: "inverse", // Loss Time: naik = bad (red)
-  },
-  NG_REWORK: {
-    title: "NG Rework Ratio",
-    suffix: "%",
-    trendLogic: "normal", // NG Rework: always green (typo in original?)
-  },
-  NG_SCRAP: {
-    title: "NG Scrap Ratio",
-    suffix: "%",
-    trendLogic: "inverse", // NG Scrap: always red in original
-  },
-};
-
-// 4. KAIZEN TABLE CONFIG
+// 3. KAIZEN TABLE CONFIG
 export interface KaizenTableConfig {
   title: string;
 }
@@ -79,7 +54,7 @@ export const KAIZEN_TABLE_TYPES: Record<string, KaizenTableConfig> = {
   },
 };
 
-// 5. KPS PROGRESS CONFIG
+// 4. KPS PROGRESS CONFIG
 export interface KPSProgressConfig {
   title: string;
 }

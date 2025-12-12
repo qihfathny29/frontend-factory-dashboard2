@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import type { KaizenTableConfig } from "../config/componentTypes";
+import { 
+  getPaginationNumbers, 
+  getPaginatedData, 
+  getTotalPages 
+} from "../../../../Base/Utils/tableHelpers";
 
-export interface KaizenData {
+export interface KaizenData extends Record<string, unknown> {
   date: string;
   shift: string;
   detail: string;
@@ -27,11 +32,10 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
 
   const { title } = config;
 
-  // Pagination logic
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = data.slice(startIndex, endIndex);
+  // Pagination logic using shared utilities
+  const totalPages = getTotalPages(data.length, itemsPerPage);
+  const currentData = getPaginatedData(data, currentPage, itemsPerPage);
+  const pageNumbers = getPaginationNumbers(currentPage, totalPages);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -129,34 +133,27 @@ const KaizenTable: React.FC<KaizenTableProps> = ({
           Prev
         </button>
 
-        {[...Array(totalPages)].map((_, index) => {
-          const page = index + 1;
-          if (
-            page === 1 ||
-            page === totalPages ||
-            (page >= currentPage - 1 && page <= currentPage + 1)
-          ) {
+        {pageNumbers.map((page, index) => {
+          if (page === "...") {
             return (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`text-xs font-medium px-2 py-1 rounded ${
-                  currentPage === page
-                    ? "bg-blue-600 text-white font-bold"
-                    : "text-gray-700 hover:text-blue-600"
-                }`}
-              >
-                {page}
-              </button>
-            );
-          } else if (page === currentPage - 2 || page === currentPage + 2) {
-            return (
-              <span key={page} className="text-xs text-gray-500">
+              <span key={`ellipsis-${index}`} className="text-xs text-gray-500">
                 ...
               </span>
             );
           }
-          return null;
+          return (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page as number)}
+              className={`text-xs font-medium px-2 py-1 rounded ${
+                currentPage === page
+                  ? "bg-blue-600 text-white font-bold"
+                  : "text-gray-700 hover:text-blue-600"
+              }`}
+            >
+              {page}
+            </button>
+          );
         })}
 
         <button

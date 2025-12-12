@@ -10,12 +10,17 @@ export interface TrendConfig {
 }
 
 /**
- * Fiscal year configuration
+ * Comparison configuration 
  */
-export interface FiscalYearConfig {
+export interface ComparisonConfig {
   value: number;
   label?: string; // Default
 }
+
+/**
+ * @deprecated Use ComparisonConfig instead. Kept for backward compatibility.
+ */
+export type FiscalYearConfig = ComparisonConfig;
 
 /**
  * Formatting options for the metric display
@@ -25,13 +30,14 @@ export interface MetricFormatting {
   valueSize?: "small" | "medium" | "large"; // text-6xl, text-7xl, text-8xl
   showPercentage?: boolean; // Show % change for currency
   previousValue?: number; // For percentage calculation
+  suffix?: string; // Suffix for value display
 }
 
 export interface MetricCardProps {
   title: string;
   value: number;
   trend: TrendConfig;
-  fiscalYear: FiscalYearConfig;
+  fiscalYear: ComparisonConfig;
   formatting?: MetricFormatting;
 }
 
@@ -106,7 +112,7 @@ const getValueSizeClass = (size?: string): string => {
 
 /**
  * Generic Metric Card Component
- * Unified card for displaying metrics across Safety, Quality, and Delivery dashboards
+ * Unified card for displaying metrics across Safety, Quality, Delivery, and Mfg dashboards
  */
 const MetricCard: React.FC<MetricCardProps> = ({
   title,
@@ -120,6 +126,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
     valueSize,
     showPercentage = false,
     previousValue,
+    suffix = "",
   } = formatting || {};
 
   // Get trend configuration
@@ -132,12 +139,16 @@ const MetricCard: React.FC<MetricCardProps> = ({
       : null;
 
   // Format display values
-  const displayValue = isCurrency ? formatCurrency(value) : value;
+  const displayValue = isCurrency 
+    ? formatCurrency(value) 
+    : `${value.toLocaleString("id-ID")}${suffix}`;
   const displayTrendValue =
-    isCurrency && percentageChange ? `${percentageChange}%` : trend.value;
+    isCurrency && percentageChange 
+      ? `${percentageChange}%` 
+      : `${Math.abs(trend.value).toLocaleString("id-ID")}${suffix}`;
   const displayFiscalValue = isCurrency
     ? formatCurrency(fiscalYear.value)
-    : fiscalYear.value;
+    : `${fiscalYear.value.toLocaleString("id-ID")}${suffix}`;
 
   // Get value size class
   const valueSizeClass = getValueSizeClass(
