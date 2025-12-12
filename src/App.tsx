@@ -1,71 +1,33 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { Navbar } from "./Components/Navbar";
-import { Header } from "./Components/Header";
 import { Login } from "./Pages/Auth/Login";
 import { Preview } from "./Pages/Preview";
+import { DashboardLayout } from "./Base/Layouts/DashboardLayout";
+import { ProtectedRoute } from "./Base/Routes/ProtectedRoutes";
 import SafetyDashboard from "./Pages/Dashboard/Safety/Dashboard";
 import QualityDashboard from "./Pages/Dashboard/Quality/Dashboard";
 import DeliveryDashboard from "./Pages/Dashboard/Delivery/Dashboard";
 import MfgDashboard from "./Pages/Dashboard/Mfg/Dashboard";
 import { SafetyForm } from "./Pages/FormSubmission/Safety/Form";
-
-type PageType = "login" | "preview" | "dashboard" | "submission";
+import { logout } from "./Base/Utils/auth";
+import type { AppPage, TabType } from "./Base/Types";
 
 function App() {
-  // Always start with login page as initial route
-  const [currentPage, setCurrentPage] = useState<PageType>("login");
-  const [activeTab, setActiveTab] = useState("Safety");
-  const [activeSubmissionTab, setActiveSubmissionTab] = useState("Safety");
+  const [currentPage, setCurrentPage] = useState<AppPage>("login");
+  const [activeTab, setActiveTab] = useState<TabType>("Safety");
   const [selectedPlants, setSelectedPlants] = useState<string[]>(["all"]);
 
-  // Check session validity before accessing protected pages
-  const isAuthenticated = (): boolean => {
-    const session = localStorage.getItem("user_sessions");
-    if (!session) return false;
+  const handleLogin = () => setCurrentPage("preview");
 
-    try {
-      const { isLoggedIn, loginTime } = JSON.parse(session);
-      const now = new Date().getTime();
-      const sessionTime = new Date(loginTime).getTime();
-      const hoursDiff = (now - sessionTime) / (1000 * 60 * 60);
-
-      if (isLoggedIn && hoursDiff < 24) {
-        return true;
-      } else {
-        localStorage.removeItem("user_sessions");
-        return false;
-      }
-    } catch {
-      localStorage.removeItem("user_sessions");
-      return false;
-    }
-  };
-
-  // Handle Login
-  const handleLogin = () => {
-    setCurrentPage("preview");
-  };
-
-  // Handle Navigation from Preview
-  const handleNavigateFromPreview = (page: "dashboard" | "submission") => {
-    if (!isAuthenticated()) {
-      toast.error("Session expired. Please login again.");
-      setCurrentPage("login");
-      return;
-    }
-    setCurrentPage(page);
-  };
-
-  // Handle Logout
   const handleLogout = () => {
-    localStorage.removeItem("user_sessions");
+    logout();
     toast.success("Logged out successfully!");
     setCurrentPage("login");
   };
 
-  // Render Dashboard based on active tab
-  const renderDashboard = () => {
+  const goToPreview = () => setCurrentPage("preview");
+
+  const renderDashboardContent = () => {
     switch (activeTab) {
       case "Safety":
         return <SafetyDashboard selectedPlants={selectedPlants} />;
@@ -79,9 +41,7 @@ function App() {
         return (
           <div className="min-h-screen bg-[#EEE9E5] p-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">
-                Management Dashboard
-              </h1>
+              <h1 className="text-2xl font-bold text-[#1864ab]">Management Dashboard</h1>
               <p className="text-gray-600 mt-4">Coming soon...</p>
             </div>
           </div>
@@ -91,128 +51,71 @@ function App() {
     }
   };
 
-  // LOGIN PAGE
-  if (currentPage === "login") {
+  const renderSubmissionContent = () => {
+    if (activeTab === "Safety") {
+      return <SafetyForm />;
+    }
+    
+    const formTitle = activeTab === "Mfg.Capability" ? "Mfg. Capability" : activeTab;
     return (
-      <Login
-        onLogin={handleLogin}
-        onGoToPreview={() => {
-          if (isAuthenticated()) {
-            setCurrentPage("preview");
-          }
-        }}
-      />
+      <div className="min-h-screen bg-[#EEE9E5] p-6">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold text-[#1864ab] mb-4">
+            {formTitle} Submission Form
+          </h1>
+          <p className="text-gray-600 text-lg">Coming soon...</p>
+        </div>
+      </div>
+    );
+  };
+
+  // Login Page
+  if (currentPage === "login") {
+    return <Login onLogin={handleLogin} onGoToPreview={goToPreview} />;
+  }
+
+  // Landing Page
+  if (currentPage === "preview") {
+    return (
+      <ProtectedRoute>
+        <Preview onNavigate={(page) => setCurrentPage(page)} onLogout={handleLogout} />
+      </ProtectedRoute>
     );
   }
 
-  // PREVIEW/LANDING PAGE
-  if (currentPage === "preview") {
-    if (!isAuthenticated()) {
-      toast.error("Please login first.");
-      setCurrentPage("login");
-      return null;
-    }
-    return <Preview onNavigate={handleNavigateFromPreview} onLogout={handleLogout} />;
-  }
-
-  // DASHBOARD PAGE
+  // Dashboard Page
   if (currentPage === "dashboard") {
-    if (!isAuthenticated()) {
-      toast.error("Please login first.");
-      setCurrentPage("login");
-      return null;
-    }
     return (
-      <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
-        <Navbar
+      <ProtectedRoute>
+        <DashboardLayout
           activeTab={activeTab}
           onTabChange={setActiveTab}
           selectedPlants={selectedPlants}
           onPlantsChange={setSelectedPlants}
-          showFilters={true}
-          showBackToLanding={true}
-          onBackToLanding={() => setCurrentPage("preview")}
-        />
-        <Header activeTab={activeTab} />
-        <div className="flex-1 overflow-hidden relative">{renderDashboard()}</div>
-      </div>
+          showPlantFilter={true}
+          onBackToPreview={goToPreview}
+        >
+          {renderDashboardContent()}
+        </DashboardLayout>
+      </ProtectedRoute>
     );
   }
 
-  // Render Form Submission based on active submission tab
-  const renderSubmissionForm = () => {
-    switch (activeSubmissionTab) {
-      case "Safety":
-        return <SafetyForm />;
-      case "Quality":
-        return (
-          <div className="min-h-screen bg-[#EEE9E5] p-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">
-                Quality Submission Form
-              </h1>
-              <p className="text-gray-600 mt-4">Coming soon...</p>
-            </div>
-          </div>
-        );
-      case "Delivery":
-        return (
-          <div className="min-h-screen bg-[#EEE9E5] p-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">
-                Delivery Submission Form
-              </h1>
-              <p className="text-gray-600 mt-4">Coming soon...</p>
-            </div>
-          </div>
-        );
-      case "Mfg.Capability":
-        return (
-          <div className="min-h-screen bg-[#EEE9E5] p-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">
-                Mfg.Capability Submission Form
-              </h1>
-              <p className="text-gray-600 mt-4">Coming soon...</p>
-            </div>
-          </div>
-        );
-      case "Management":
-        return (
-          <div className="min-h-screen bg-[#EEE9E5] p-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h1 className="text-2xl font-bold text-[#1864ab]">
-                Management Submission Form
-              </h1>
-              <p className="text-gray-600 mt-4">Coming soon...</p>
-            </div>
-          </div>
-        );
-      default:
-        return <SafetyForm />;
-    }
-  };
-
-  // SUBMISSION PAGE
+  // Submission Page
   if (currentPage === "submission") {
-    if (!isAuthenticated()) {
-      toast.error("Please login first.");
-      setCurrentPage("login");
-      return null;
-    }
     return (
-      <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
-        <Navbar
-          activeTab={activeSubmissionTab}
-          onTabChange={setActiveSubmissionTab}
+      <ProtectedRoute>
+        <DashboardLayout
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
           selectedPlants={selectedPlants}
           onPlantsChange={setSelectedPlants}
-          showFilters={false}
-          showBackToLanding={true}
-          onBackToLanding={() => setCurrentPage("preview")}
-        />
-        <div className="flex-1 overflow-hidden relative">{renderSubmissionForm()}</div>
-      </div>
+          showPlantFilter={false}
+          onBackToPreview={goToPreview}
+        >
+          {renderSubmissionContent()}
+        </DashboardLayout>
+      </ProtectedRoute>
     );
   }
 
