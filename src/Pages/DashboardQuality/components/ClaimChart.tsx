@@ -13,8 +13,8 @@ import {
   type ChartData,
 } from "chart.js";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import AchievedIcon from "./../assets/Achieved.png";
-import NotAchievedIcon from "./../assets/Notachieved.png";
+import AchievedIcon from "./../../../Assets/Achieved.png";
+import NotAchievedIcon from "./../../../Assets/Notachieved.png";
 
 ChartJS.register(
   CategoryScale,

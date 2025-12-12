@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Navbar } from "./Components/Navbar";
 import { Header } from "./Components/Header";
-import SafetyDashboard from "./Dashboard_Safety/Dashboard";
-import QualityDashboard from "./Dashboard Quality/Dashboard";
-import DeliveryDashboard from "./Dashboard Delivery/Dashboard";
-import MfgDashboard from "./Dashboard mfg/Dashboard";
+import SafetyDashboard from "./Pages/DashboardSafety/Dashboard";
+import QualityDashboard from "./Pages/DashboardQuality/Dashboard";
+import DeliveryDashboard from "./Pages/DashboardDelivery/Dashboard";
+import MfgDashboard from "./Pages/DashboardMfg/Dashboard";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Safety");
